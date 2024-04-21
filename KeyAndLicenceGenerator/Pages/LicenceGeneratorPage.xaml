@@ -1,0 +1,130 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<ContentPage xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             x:Class="KeyAndLicenceGenerator.Pages.LicenceGeneratorPage"
+             Title="Γεννήτρια Αδειών"
+             xmlns:vm="clr-namespace:KeyAndLicenceGenerator.ViewModels"
+             xmlns:toolkit="http://schemas.microsoft.com/dotnet/2022/maui/toolkit"
+             ControlTemplate="{StaticResource PageTemplate}">
+
+    <ContentPage.BindingContext>
+        <vm:LicenceGeneratorViewModel />
+    </ContentPage.BindingContext>
+
+    <ContentPage.Resources>
+        <Style x:Key="InvalidEntryStyle"
+               TargetType="Entry">
+            <Setter Property="TextColor"
+                    Value="Red" />
+        </Style>
+        <Style x:Key="ValidEntryStyle"
+               TargetType="Entry">
+            <Setter Property="TextColor"
+                    Value="Green" />
+        </Style>
+    </ContentPage.Resources>
+
+    <ScrollView>
+        <VerticalStackLayout Padding="0,60,0,0"
+                             Spacing="30"
+                             HorizontalOptions="Center"
+                             MinimumWidthRequest="500"
+                             MaximumWidthRequest="1000">
+            <Label Text="Εισάγετε τα στοιχεία της Άδειας του Πελάτη"
+                   FontAttributes="Bold"
+                   HorizontalOptions="Center" />
+
+            <Entry x:Name="commonName"
+                   Text="{Binding CommonName, Mode=TwoWay}"
+                   Placeholder="Εταιρεία Πελάτη"
+                   HorizontalOptions="FillAndExpand"
+                   MaximumWidthRequest="1000"
+                   ToolTipProperties.Text="Εισάγετε την επωνυμία της εταιρείας του πελάτη">
+                <Entry.Behaviors>
+                    <toolkit:CharactersValidationBehavior InvalidStyle="{StaticResource InvalidEntryStyle}"
+                                                          ValidStyle="{StaticResource ValidEntryStyle}"
+                                                          Flags="ValidateOnValueChanged"
+                                                          MinimumCharacterTypeCount="3" />
+                </Entry.Behaviors>
+            </Entry>
+
+            <Entry x:Name="email"
+                   Text="{Binding Email, Mode=TwoWay}"
+                   Placeholder="Email Πελάτη"
+                   HorizontalOptions="Fill"
+                   MaximumWidthRequest="1000"
+                   ToolTipProperties.Text="Εισάγετε το email της εταιρείας του πελάτη">
+                <Entry.Behaviors>
+                    <toolkit:EmailValidationBehavior InvalidStyle="{StaticResource InvalidEntryStyle}"
+                                                     ValidStyle="{StaticResource ValidEntryStyle}"
+                                                     Flags="ValidateOnValueChanged" />
+                </Entry.Behaviors>
+            </Entry>
+
+            <Entry x:Name="country"
+                   Text="{Binding Country, Mode=TwoWay}"
+                   Placeholder="Χώρα (C)"
+                   HorizontalOptions="Fill"
+                   MaximumWidthRequest="1000"
+                   ToolTipProperties.Text="Εισάγετε την χώρα που εδρείει η εταιρεία του πελάτη">
+                <Entry.Behaviors>
+                    <toolkit:CharactersValidationBehavior InvalidStyle="{StaticResource InvalidEntryStyle}"
+                                                          ValidStyle="{StaticResource ValidEntryStyle}"
+                                                          Flags="ValidateOnValueChanged"
+                                                          MinimumCharacterTypeCount="3" />
+                </Entry.Behaviors>
+            </Entry>
+            <HorizontalStackLayout Padding="10"
+                                   Spacing="10">
+                <Label Text="Ημερομηνία Λήξης:"
+                       HorizontalOptions="Start"
+                       VerticalTextAlignment="Center" />
+
+                <DatePicker x:Name="selectedDate"
+                            Format="dd-MM-yyyy"
+                            MinimumDate="{Binding MinDate}"
+                            MaximumDate="{Binding MaxDate}"
+                            Date="{Binding SelectedDate, Mode=TwoWay}"
+                            HorizontalOptions="Center"
+                            MaximumWidthRequest="1000"
+                            ToolTipProperties.Text="Προσοχή να μην υπερβαίνει την ημερομηνίά λήξης του κλειδιού">
+                    <DatePicker.Behaviors>
+                        <toolkit:CharactersValidationBehavior InvalidStyle="{StaticResource InvalidEntryStyle}"
+                                                              ValidStyle="{StaticResource ValidEntryStyle}"
+                                                              Flags="ValidateOnValueChanged" />
+                    </DatePicker.Behaviors>
+                </DatePicker>
+            </HorizontalStackLayout>
+            <HorizontalStackLayout Padding="10"
+                                   Spacing="10">
+                <Picker x:Name="formatPicker"
+                        MinimumWidthRequest="400"
+                        WidthRequest="400"
+                        HorizontalOptions="StartAndExpand"
+                        HorizontalTextAlignment="Start"
+                        ToolTipProperties.Text="Επιλέξτε το USB για να αποθηκευτεί η άδεια. Το κλειδί θα εμπεριέχει το Serial Number της συσκευής USB.">
+                    <Picker.ItemsSource>
+                        <x:Array Type="{x:Type x:String}">
+                            <x:String>Option 1</x:String>
+                            <x:String>Option 2</x:String>
+                            <x:String>Option 3</x:String>
+                        </x:Array>
+                    </Picker.ItemsSource>
+                </Picker>
+
+                <!-- Button to trigger formatting based on selected option -->
+                <Button Text="FORMAT"
+                        Clicked="OnFormatClicked"
+                        HorizontalOptions="End"
+                        WidthRequest="100"
+                        ToolTipProperties.Text="ΠΡΟΣΟΧΗ: Θα διαγραφούν όλα τα δεδομένα" />
+            </HorizontalStackLayout>
+
+            <Button Clicked="LicenceClicked"
+                    Text="Generate Keys"
+                    HorizontalOptions="Fill"
+                    IsEnabled="{Binding IsFormValid}"
+                    ToolTipProperties.Text="Δημιουργία Άδειας Πελάτη. Θα σας ζητηθεί να αποθηκεύσετε αντίγραφο στον υπολογιστή σας ενώ η αποθήκευση στο USB γίνει αυτόματα"/>
+        </VerticalStackLayout>
+    </ScrollView>
+</ContentPage>

@@ -1,0 +1,30 @@
+﻿<?xml version="1.0" encoding="utf-8" ?>
+<ContentPage xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             x:Class="KeyAndLicenceGenerator.Pages.MainPage"
+             Title=""
+             ControlTemplate="{StaticResource PageTemplate}"
+             xmlns:vm="clr-namespace:KeyAndLicenceGenerator.ViewModels"
+             x:Name="MainPageInstance">
+
+    <ContentPage.BindingContext>
+        <vm:MainPageViewModel />
+    </ContentPage.BindingContext>
+
+    <ScrollView>
+        <VerticalStackLayout Padding="30,0"
+                             Spacing="25"
+                             VerticalOptions="StartAndExpand"
+                             HorizontalOptions="Center">
+            <HorizontalStackLayout Padding="20"
+                                   Spacing="20">
+                <Button Text="ΚΛΕΙΔΙΑ"
+                        Style="{StaticResource LargeButtonStyle}"
+                        Command="{Binding Path=BindingContext.NavigateToKeysCommand, Source={x:Reference MainPageInstance}}" />
+                <Button Text="ΑΔΕΙΕΣ"
+                        Style="{StaticResource LargeButtonStyle}"
+                        Command="{Binding Path=BindingContext.NavigateToLicencesCommand, Source={x:Reference MainPageInstance}}" />
+            </HorizontalStackLayout>
+        </VerticalStackLayout>
+    </ScrollView>
+</ContentPage>

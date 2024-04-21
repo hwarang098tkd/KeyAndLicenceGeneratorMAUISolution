@@ -1,0 +1,101 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<ContentPage xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             x:Class="KeyAndLicenceGenerator.Pages.KeysGeneratorPage"
+             Title="Γεννήτρια Κλειδιών Πελάτη"
+             xmlns:vm="clr-namespace:KeyAndLicenceGenerator.ViewModels"
+             xmlns:toolkit="http://schemas.microsoft.com/dotnet/2022/maui/toolkit"
+             ControlTemplate="{StaticResource PageTemplate}">
+
+    <ContentPage.BindingContext>
+        <vm:KeysGeneratorViewModel />
+    </ContentPage.BindingContext>
+
+    <ContentPage.Resources>
+        <Style x:Key="InvalidEntryStyle"
+               TargetType="Entry">
+            <Setter Property="TextColor"
+                    Value="Red" />
+        </Style>
+        <Style x:Key="ValidEntryStyle"
+               TargetType="Entry">
+            <Setter Property="TextColor"
+                    Value="Green" />
+        </Style>
+    </ContentPage.Resources>
+
+    <ScrollView>
+        <VerticalStackLayout Padding="0,60,0,0"
+                             Spacing="30"
+                             HorizontalOptions="Center"
+                             MinimumWidthRequest="500"
+                             MaximumWidthRequest="1000">
+            <Label Text="Εισάγετε τα στοιχεία του κλειδιού"
+                   FontAttributes="Bold"
+                   HorizontalOptions="Center" />
+
+            <Entry x:Name="commonName"
+                   Text="{Binding CommonName, Mode=TwoWay}"
+                   Placeholder="Όνομα Εταιρείας (CN)"
+                   HorizontalOptions="FillAndExpand"
+                   MaximumWidthRequest="1000">
+                <Entry.Behaviors>
+                    <toolkit:CharactersValidationBehavior InvalidStyle="{StaticResource InvalidEntryStyle}"
+                                                          ValidStyle="{StaticResource ValidEntryStyle}"
+                                                          Flags="ValidateOnValueChanged"
+                                                          MinimumCharacterTypeCount="3" />
+                </Entry.Behaviors>
+            </Entry>
+
+            <Entry x:Name="email"
+                   Text="{Binding Email, Mode=TwoWay}"
+                   Placeholder="Email (E)"
+                   HorizontalOptions="Fill"
+                   MaximumWidthRequest="1000">
+                <Entry.Behaviors>
+                    <toolkit:EmailValidationBehavior InvalidStyle="{StaticResource InvalidEntryStyle}"
+                                                     ValidStyle="{StaticResource ValidEntryStyle}"
+                                                     Flags="ValidateOnValueChanged" />
+                </Entry.Behaviors>
+            </Entry>
+
+            <Entry x:Name="country"
+                   Text="{Binding Country, Mode=TwoWay}"
+                   Placeholder="Χώρα (C)"
+                   HorizontalOptions="Fill"
+                   MaximumWidthRequest="1000">
+                <Entry.Behaviors>
+                    <toolkit:CharactersValidationBehavior InvalidStyle="{StaticResource InvalidEntryStyle}"
+                                                          ValidStyle="{StaticResource ValidEntryStyle}"
+                                                          Flags="ValidateOnValueChanged"
+                                                          MinimumCharacterTypeCount="3" />
+                </Entry.Behaviors>
+            </Entry>
+            <HorizontalStackLayout Padding="10"
+                                   Spacing="10">
+                <Label Text="Ημερομηνία Λήξης:"
+                       HorizontalOptions="Start"
+                       VerticalTextAlignment="Center" />
+
+                <DatePicker x:Name="selectedDate"
+                            Format="dd-MM-yyyy"
+                            MinimumDate="{Binding MinDate}"
+                            MaximumDate="{Binding MaxDate}"
+                            Date="{Binding SelectedDate, Mode=TwoWay}"
+                            HorizontalOptions="Center"
+                            MaximumWidthRequest="1000">
+                    <DatePicker.Behaviors>
+                        <toolkit:CharactersValidationBehavior InvalidStyle="{StaticResource InvalidEntryStyle}"
+                                                              ValidStyle="{StaticResource ValidEntryStyle}"
+                                                              Flags="ValidateOnValueChanged" />
+                    </DatePicker.Behaviors>
+                </DatePicker>
+            </HorizontalStackLayout>
+
+            <Button Clicked="Button_Clicked"
+                    Text="Generate Keys"
+                    HorizontalOptions="Fill"
+                    IsEnabled="{Binding IsFormValid}" />
+        </VerticalStackLayout>
+    </ScrollView>
+</ContentPage>

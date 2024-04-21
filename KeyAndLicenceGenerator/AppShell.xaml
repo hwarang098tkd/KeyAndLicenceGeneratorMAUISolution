@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<Shell x:Class="KeyAndLicenceGenerator.AppShell"
+       xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+       xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+       xmlns:local="clr-namespace:KeyAndLicenceGenerator.Pages"
+       Shell.FlyoutBehavior="Flyout"
+       Title="Κλειδιά και Άδειες"
+       FlyoutBackgroundColor="WhiteSmoke"
+       Padding="10">
+
+    <ShellContent Title="Κεντρική"
+                  ContentTemplate="{DataTemplate local:MainPage}"
+                  Route="MainPage" />
+    <ShellContent Title="Κλειδιά"
+                  ContentTemplate="{DataTemplate local:KeysGeneratorPage}"
+                  Route="KeysGeneratorPage" />
+    <ShellContent Title="Άδειες"
+                  ContentTemplate="{DataTemplate local:LicenceGeneratorPage}"
+                  Route="LicenceGeneratorPage" />
+    
+</Shell>
