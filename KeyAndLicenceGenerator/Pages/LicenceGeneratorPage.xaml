@@ -97,19 +97,18 @@
             </HorizontalStackLayout>
             <HorizontalStackLayout Padding="10"
                                    Spacing="10">
+                <Button FontFamily="FontSolid"
+                        Text="&#xf1e1;">
+
+                </Button>
+
                 <Picker x:Name="formatPicker"
                         MinimumWidthRequest="400"
                         WidthRequest="400"
                         HorizontalOptions="StartAndExpand"
                         HorizontalTextAlignment="Start"
-                        ToolTipProperties.Text="Επιλέξτε το USB για να αποθηκευτεί η άδεια. Το κλειδί θα εμπεριέχει το Serial Number της συσκευής USB.">
-                    <Picker.ItemsSource>
-                        <x:Array Type="{x:Type x:String}">
-                            <x:String>Option 1</x:String>
-                            <x:String>Option 2</x:String>
-                            <x:String>Option 3</x:String>
-                        </x:Array>
-                    </Picker.ItemsSource>
+                        ToolTipProperties.Text="Επιλέξτε το USB για να αποθηκευτεί η άδεια. Το κλειδί θα εμπεριέχει το Serial Number της συσκευής USB."
+                        ItemsSource="{Binding UsbDeviceNames}">
                 </Picker>
 
                 <!-- Button to trigger formatting based on selected option -->
@@ -124,7 +123,7 @@
                     Text="Generate Keys"
                     HorizontalOptions="Fill"
                     IsEnabled="{Binding IsFormValid}"
-                    ToolTipProperties.Text="Δημιουργία Άδειας Πελάτη. Θα σας ζητηθεί να αποθηκεύσετε αντίγραφο στον υπολογιστή σας ενώ η αποθήκευση στο USB γίνει αυτόματα"/>
+                    ToolTipProperties.Text="Δημιουργία Άδειας Πελάτη. Θα σας ζητηθεί να αποθηκεύσετε αντίγραφο στον υπολογιστή σας ενώ η αποθήκευση στο USB γίνει αυτόματα" />
         </VerticalStackLayout>
     </ScrollView>
 </ContentPage>

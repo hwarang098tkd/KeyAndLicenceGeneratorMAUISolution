@@ -3,7 +3,9 @@ Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio Version 17
 VisualStudioVersion = 17.9.34728.123
 MinimumVisualStudioVersion = 10.0.40219.1
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "KeyAndLicenceGenerator", "KeyAndLicenceGenerator\KeyAndLicenceGenerator.csproj", "{6365C60F-95E9-4A51-9FA3-16ADC7B9F129}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "KeyAndLicenceGenerator", "KeyAndLicenceGenerator\KeyAndLicenceGenerator.csproj", "{6365C60F-95E9-4A51-9FA3-16ADC7B9F129}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "UsbDeviceLibrary", "UsbDeviceLibrary\UsbDeviceLibrary.csproj", "{C44848B2-5FA7-4684-AA18-1C79DBE9F6BC}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -17,6 +19,10 @@ Global
 		{6365C60F-95E9-4A51-9FA3-16ADC7B9F129}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{6365C60F-95E9-4A51-9FA3-16ADC7B9F129}.Release|Any CPU.Build.0 = Release|Any CPU
 		{6365C60F-95E9-4A51-9FA3-16ADC7B9F129}.Release|Any CPU.Deploy.0 = Release|Any CPU
+		{C44848B2-5FA7-4684-AA18-1C79DBE9F6BC}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{C44848B2-5FA7-4684-AA18-1C79DBE9F6BC}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{C44848B2-5FA7-4684-AA18-1C79DBE9F6BC}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{C44848B2-5FA7-4684-AA18-1C79DBE9F6BC}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

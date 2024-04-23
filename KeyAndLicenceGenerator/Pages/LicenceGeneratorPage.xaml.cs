@@ -1,5 +1,11 @@
 using System.Diagnostics;
 
+#if WINDOWS
+
+using UsbDeviceLib;
+
+#endif
+
 namespace KeyAndLicenceGenerator.Pages;
 
 public partial class LicenceGeneratorPage : ContentPage
