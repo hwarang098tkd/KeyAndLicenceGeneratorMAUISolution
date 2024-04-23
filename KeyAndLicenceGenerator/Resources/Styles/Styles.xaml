@@ -29,6 +29,23 @@
                 Value="{AppThemeBinding Light={StaticResource Gray950}, Dark={StaticResource Gray200}}" />
     </Style>
 
+    <Style x:Key="LargeButtonStyle"
+           TargetType="Button">
+        <Setter Property="FontAttributes"
+                Value="Bold" />
+        <Setter Property="FontSize"
+                Value="40" />
+        <Setter Property="WidthRequest"
+                Value="350" />
+        <Setter Property="HeightRequest"
+                Value="350" />
+        <!-- Example color -->
+        <Setter Property="TextColor"
+                Value="White" />
+        <Setter Property="CornerRadius"
+                Value="10" />
+    </Style>
+
     <Style TargetType="Button">
         <Setter Property="TextColor"
                 Value="{AppThemeBinding Light={StaticResource White}, Dark={StaticResource PrimaryDarkText}}" />
@@ -64,7 +81,9 @@
                     <VisualState x:Name="Pressed">
                         <VisualState.Setters>
                             <Setter Property="Scale"
-                                    Value="0.99" />
+                                    Value="0.95" />
+                            <Setter Property="TextColor"
+                                    Value="LightGray" />
                         </VisualState.Setters>
                     </VisualState>
                 </VisualStateGroup>

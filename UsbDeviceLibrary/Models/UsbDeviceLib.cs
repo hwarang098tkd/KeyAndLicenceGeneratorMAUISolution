@@ -1,11 +1,12 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 
-namespace UsbDeviceLib.Model
+namespace UsbDeviceLibrary.Model
 {
     /// <summary>
     /// Represents information about a USB drive, including details about its volumes.
     /// </summary>
-    public class UsbDriveInfo
+    public class UsbDriveInfo : ICloneable
     {
         /// <summary>Gets or sets the name of the device.</summary>
         public string DeviceName { get; set; }
@@ -39,19 +40,40 @@ namespace UsbDeviceLib.Model
             Volumes = new List<VolumeInfo>();
         }
 
+        public object Clone()
+        {
+            // Create a deep copy of the UsbDriveInfo
+            var cloned = new UsbDriveInfo
+            {
+                DeviceName = this.DeviceName,
+                DriveLetter = this.DriveLetter,
+                SerialNumber = this.SerialNumber,
+                Size = this.Size,
+                Manufacturer = this.Manufacturer,
+                Model = this.Model,
+                InterfaceType = this.InterfaceType,
+                Volumes = new List<VolumeInfo>(this.Volumes) // Assuming VolumeInfo is a class with value-like behavior or also implements ICloneable
+            };
+            return cloned;
+        }
+
         /// <summary>
         /// Returns a string that represents the current object.
         /// </summary>
         /// <returns>A string that represents the current object.</returns>
         public override string ToString()
         {
-            var volumeDescriptions = string.Empty;
-            foreach (var volume in Volumes)
+            // Return details about the volumes instead of the drive
+            if (Volumes.Count > 0)
             {
-                volumeDescriptions += $" {volume.ToString()} |";
+                var volumeDetails = new List<string>();
+                foreach (var volume in Volumes)
+                {
+                    volumeDetails.Add($"{volume.Name} | {UsbDriveUtilities.FormatBytes(volume.Size)} | {UsbDriveUtilities.FormatBytes(volume.FreeSpace)} free | {volume.FileSystem}");
+                }
+                return string.Join(", ", volumeDetails);
             }
-            volumeDescriptions = volumeDescriptions.TrimEnd('|');
-            return $"{DriveLetter} | {DeviceName} | {Model} | {InterfaceType} | {volumeDescriptions}";
+            return "No volumes detected on this drive.";
         }
     }
 

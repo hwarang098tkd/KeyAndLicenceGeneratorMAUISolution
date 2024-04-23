@@ -1,7 +1,7 @@
 ﻿using System.Management;
-using UsbDeviceLib.Model;
+using UsbDeviceLibrary.Model;
 
-namespace UsbDeviceLib
+namespace UsbDeviceLibrary
 {
     /// <summary>
     /// Provides methods to search and retrieve information about connected USB drives.
@@ -30,9 +30,8 @@ namespace UsbDeviceLib
 
                 foreach (ManagementObject device in searcher.Get())
                 {
-                    UsbDriveInfo driveInfo = CreateUsbDriveInfo(device);
-                    PopulateVolumeInfo(driveInfo, device["DeviceID"].ToString());
-                    drives.Add(driveInfo);
+                    UsbDriveInfo baseDriveInfo = CreateUsbDriveInfo(device);
+                    PopulateVolumeInfo(baseDriveInfo, device["DeviceID"].ToString(), drives);
                 }
             }
             catch (ManagementException ex)
@@ -62,7 +61,7 @@ namespace UsbDeviceLib
             };
         }
 
-        private static void PopulateVolumeInfo(UsbDriveInfo driveInfo, string deviceId)
+        private static void PopulateVolumeInfo(UsbDriveInfo baseDriveInfo, string deviceId, List<UsbDriveInfo> drives)
         {
             var partitionSearcher = new ManagementObjectSearcher(
                 $"ASSOCIATORS OF {{Win32_DiskDrive.DeviceID='{deviceId}'}} WHERE AssocClass = Win32_DiskDriveToDiskPartition");
@@ -74,15 +73,21 @@ namespace UsbDeviceLib
 
                 foreach (ManagementObject logical in logicalSearcher.Get())
                 {
-                    VolumeInfo volume = new VolumeInfo
+                    // Clone the base drive info for each volume to treat them as separate devices
+                    var clonedDriveInfo = (UsbDriveInfo)baseDriveInfo.Clone();
+                    clonedDriveInfo.DriveLetter = logical["DeviceID"].ToString();
+                    var volumeInfo = new VolumeInfo
                     {
                         Name = logical["VolumeName"].ToString(),
                         Size = Convert.ToInt64(logical["Size"]),
                         FreeSpace = Convert.ToInt64(logical["FreeSpace"]),
                         FileSystem = logical["FileSystem"].ToString()
                     };
-                    driveInfo.DriveLetter = logical["DeviceID"].ToString();
-                    driveInfo.Volumes.Add(volume);
+                    clonedDriveInfo.Volumes.Clear(); // Clear any existing volumes
+                    clonedDriveInfo.Volumes.Add(volumeInfo);
+
+                    // Add the volume info as a separate device
+                    drives.Add(clonedDriveInfo);
                 }
             }
         }

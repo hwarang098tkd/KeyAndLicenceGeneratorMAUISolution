@@ -1,7 +1,7 @@
 ﻿using Newtonsoft.Json;
-using UsbDeviceLib.Model;
+using UsbDeviceLibrary.Model;
 
-namespace UsbDeviceLib
+namespace UsbDeviceLibrary
 {
     /// <summary>
     /// Provides utilities for extracting and formatting information about USB drives connected to a Windows system.
@@ -56,7 +56,7 @@ namespace UsbDeviceLib
         /// </summary>
         /// <param name="bytes">The size in bytes to format.</param>
         /// <returns>Formatted string representing the size in appropriate units.</returns>
-        private static string FormatBytes(long bytes)
+        public static string FormatBytes(long bytes)
         {
             string[] sizes = { "B", "KB", "MB", "GB", "TB" };  // Array to hold size orders
             double formattedSize = bytes;

@@ -8,23 +8,9 @@
             <ResourceDictionary.MergedDictionaries>
                 <ResourceDictionary Source="Resources/Styles/Colors.xaml" />
                 <ResourceDictionary Source="Resources/Styles/Styles.xaml" />
+                <ResourceDictionary Source="Resources/Styles/Icons.xaml" />
             </ResourceDictionary.MergedDictionaries>
-            <Style x:Key="LargeButtonStyle"
-                   TargetType="Button">
-                <Setter Property="FontAttributes"
-                        Value="Bold" />
-                <Setter Property="FontSize"
-                        Value="40" />
-                <Setter Property="WidthRequest"
-                        Value="350" />
-                <Setter Property="HeightRequest"
-                        Value="350" />
-                <!-- Example color -->
-                <Setter Property="TextColor"
-                        Value="White" />
-                <Setter Property="CornerRadius"
-                        Value="10" />
-            </Style>
+            
             <ControlTemplate x:Key="PageTemplate">
                 <Grid RowDefinitions="*,Auto">
                     <ContentPresenter Grid.Row="0" />

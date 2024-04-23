@@ -95,20 +95,24 @@
                     </DatePicker.Behaviors>
                 </DatePicker>
             </HorizontalStackLayout>
-            <HorizontalStackLayout Padding="10"
-                                   Spacing="10">
-                <Button FontFamily="FontSolid"
-                        Text="&#xf1e1;">
-
+            <HorizontalStackLayout Padding="5"
+                                   Spacing="5">
+                <Button x:Name="usbDeviceRefresh_btn"
+                        FontFamily="FABrandsRegular"
+                        Text="{StaticResource Key=arrows-rotate}"
+                        Command="{Binding LoadUsbDevicesCommand}">
                 </Button>
 
-                <Picker x:Name="formatPicker"
+                <Picker x:Name="usbDevicePicker"
                         MinimumWidthRequest="400"
                         WidthRequest="400"
-                        HorizontalOptions="StartAndExpand"
-                        HorizontalTextAlignment="Start"
+                        HorizontalOptions="Center"
+                        HorizontalTextAlignment="Center"
                         ToolTipProperties.Text="Επιλέξτε το USB για να αποθηκευτεί η άδεια. Το κλειδί θα εμπεριέχει το Serial Number της συσκευής USB."
-                        ItemsSource="{Binding UsbDeviceNames}">
+                        ItemsSource="{Binding UsbDeviceNames}"
+                        SelectedIndex="{Binding UsbDeviceSelectedIndex}"
+                        IsEnabled="{Binding UsbDeviceIsEnabled}"
+                        Title="Επιλέξτε Συσκευή:">
                 </Picker>
 
                 <!-- Button to trigger formatting based on selected option -->

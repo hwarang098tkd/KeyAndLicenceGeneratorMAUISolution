@@ -1,8 +1,9 @@
+using KeyAndLicenceGenerator.ViewModels;
 using System.Diagnostics;
 
 #if WINDOWS
 
-using UsbDeviceLib;
+using UsbDeviceLibrary;
 
 #endif
 
@@ -13,6 +14,7 @@ public partial class LicenceGeneratorPage : ContentPage
     public LicenceGeneratorPage()
     {
         InitializeComponent();
+        this.BindingContext = new LicenceGeneratorViewModel();
     }
 
     private void OnFormatClicked(object sender, EventArgs e)
