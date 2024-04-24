@@ -21,7 +21,7 @@ namespace KeyAndLicenceGenerator.ViewModels
 
         [ObservableProperty]
         [NotifyPropertyChangedFor(nameof(IsFormValid))]
-        private DateTime selectedDate;
+        private DateTime selectedDate = DateTime.Today.AddYears(1);
 
         public DateTime MinDate => DateTime.Today.AddDays(1);
         public DateTime MaxDate => DateTime.Today.AddYears(50);
@@ -57,21 +57,10 @@ namespace KeyAndLicenceGenerator.ViewModels
             return isValid;
         }
 
-
         [RelayCommand]
         public async Task GenerateKeys()
         {
-            if (IsFormValid)
-            {
-                Debug.WriteLine("Form is valid, proceeding with action.");
-                // Proceed with generating keys
-            }
-            else
-            {
-                Debug.WriteLine("Form is invalid, action aborted.");
-                // Alert the user or log the error
-                // This requires injecting a service for showing alerts, or handling it in the view.
-            }
+            Debug.WriteLine("Form is valid, proceeding with action.");
         }
     }
 }
