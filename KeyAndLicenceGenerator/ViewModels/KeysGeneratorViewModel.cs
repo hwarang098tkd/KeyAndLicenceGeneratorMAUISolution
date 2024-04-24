@@ -144,5 +144,12 @@ namespace KeyAndLicenceGenerator.ViewModels
             Debug.WriteLine("Form is valid, proceeding with action.");
             await LoadCollectionView();
         }
+
+        [RelayCommand]
+        private async Task DeleteKeysAsync(KeyFileInfo keyFile)
+        {
+            Debug.WriteLine($"Deleting key: Pressed {keyFile.CreationDate}");
+            await LoadCollectionView();
+        }
     }
 }

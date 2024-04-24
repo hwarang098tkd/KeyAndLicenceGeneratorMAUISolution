@@ -17,7 +17,7 @@ public partial class App : Application
         const int newHeight = 800;
 
         const int minWidth = 600;
-        const int minHeight = 550;
+        const int minHeight = 780;
 
         window.MinimumHeight = minHeight;
         window.MinimumWidth = minWidth;
