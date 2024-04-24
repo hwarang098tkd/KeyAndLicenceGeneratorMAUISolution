@@ -1,6 +1,4 @@
-﻿using Foundation;
-
-namespace KeyAndLicenceGenerator
+﻿namespace KeyAndLicenceGenerator
 {
     [Register("AppDelegate")]
     public class AppDelegate : MauiUIApplicationDelegate

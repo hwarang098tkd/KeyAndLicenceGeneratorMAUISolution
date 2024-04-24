@@ -1,7 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-
-namespace UsbDeviceLibrary.Model
+﻿namespace UsbDeviceLibrary.Model
 {
     /// <summary>
     /// Represents information about a USB drive, including details about its volumes.

@@ -3,8 +3,6 @@ using System.Diagnostics;
 
 #if WINDOWS
 
-using UsbDeviceLibrary;
-
 #endif
 
 namespace KeyAndLicenceGenerator.Pages;

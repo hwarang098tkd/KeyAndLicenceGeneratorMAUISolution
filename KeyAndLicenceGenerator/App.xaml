@@ -10,7 +10,7 @@
                 <ResourceDictionary Source="Resources/Styles/Styles.xaml" />
                 <ResourceDictionary Source="Resources/Styles/Icons.xaml" />
             </ResourceDictionary.MergedDictionaries>
-            
+
             <ControlTemplate x:Key="PageTemplate">
                 <Grid RowDefinitions="*,Auto">
                     <ContentPresenter Grid.Row="0" />

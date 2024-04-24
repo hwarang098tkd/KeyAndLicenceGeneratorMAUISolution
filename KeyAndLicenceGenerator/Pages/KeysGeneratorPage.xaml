@@ -5,7 +5,8 @@
              Title="Γεννήτρια Κλειδιών Πελάτη"
              xmlns:vm="clr-namespace:KeyAndLicenceGenerator.ViewModels"
              xmlns:toolkit="http://schemas.microsoft.com/dotnet/2022/maui/toolkit"
-             ControlTemplate="{StaticResource PageTemplate}">
+             ControlTemplate="{StaticResource PageTemplate}"
+             >
 
     <ContentPage.BindingContext>
         <vm:KeysGeneratorViewModel />
@@ -23,13 +24,11 @@
                     Value="Green" />
         </Style>
     </ContentPage.Resources>
-
-    <ScrollView>
-        <VerticalStackLayout Padding="0,60,0,0"
-                             Spacing="30"
-                             HorizontalOptions="Center"
-                             MinimumWidthRequest="500"
-                             MaximumWidthRequest="1000">
+    <FlexLayout Direction="Column"
+                AlignItems="Center"
+                JustifyContent="SpaceBetween">
+    <VerticalStackLayout Padding="5,60,20,0"
+                             Spacing="30">
             <Label Text="Εισάγετε τα στοιχεία του κλειδιού"
                    FontAttributes="Bold"
                    HorizontalOptions="Center" />
@@ -92,10 +91,83 @@
                 </DatePicker>
             </HorizontalStackLayout>
 
-            <Button Clicked="Button_Clicked"
-                    Text="Generate Keys"
+            <Button Text="Δημιουργία Κλειδιών (Public cer - Private pfx)"
                     HorizontalOptions="Fill"
-                    IsEnabled="{Binding IsFormValid}" />
+                    IsEnabled="{Binding IsFormValid}"
+                    Command="{Binding GenerateKeysCommand}" />
+            <Line X1="1140"
+                  Y1="0"
+                  X2="0"
+                  Y2="0"
+                  Stroke="Black" />
+
+            <Grid BackgroundColor="#EEE"
+                  Padding="10"
+                  ColumnDefinitions="*,*,*,*,*,80"
+                  MaximumWidthRequest="1000">
+                <Label Text="File Name"
+                       Grid.Column="0"
+                       HorizontalOptions="Start" />
+                <Label Text="Expiration Date"
+                       Grid.Column="1"
+                       HorizontalOptions="Center" />
+                <Label Text="Common Name"
+                       Grid.Column="2"
+                       HorizontalOptions="Center" />
+                <Label Text="Email"
+                       Grid.Column="3"
+                       HorizontalOptions="Center" />
+                <Label Text="Creation Date"
+                       Grid.Column="4"
+                       HorizontalOptions="Center" />
+                <Label Text="Actions"
+                       Grid.Column="5"
+                       HorizontalOptions="Center" />
+            </Grid>
+
+            <!-- Data Items -->
+            <CollectionView ItemsSource="{Binding KeyFiles}"
+                            SelectionMode="Single"
+                            VerticalOptions="StartAndExpand"
+                            MaximumWidthRequest="1000">
+                <CollectionView.ItemTemplate>
+                    <DataTemplate>
+                        <Grid Padding="10"
+                              ColumnSpacing="10"
+                              RowSpacing="1"
+                              ColumnDefinitions="*,*,*,*,*,80">
+                            <Label Text="{Binding FileName}"
+                                   Grid.Column="0"
+                                   HorizontalOptions="Start" />
+                            <Label Text="{Binding ExpirationDate, StringFormat='{0:MM/dd/yyyy}'}"
+                                   Grid.Column="1"
+                                   HorizontalOptions="Center" />
+                            <Label Text="{Binding CommonName}"
+                                   Grid.Column="2"
+                                   HorizontalOptions="Center" />
+                            <Label Text="{Binding Email}"
+                                   Grid.Column="3"
+                                   HorizontalOptions="Center" />
+                            <Label Text="{Binding CreationDate, StringFormat='{0:MM/dd/yyyy - hh:mm:ss}'}"
+                                   Grid.Column="4"
+                                   HorizontalOptions="Center" />
+                            <Button Text="DELETE"
+                                    Grid.Column="5"
+                                    HorizontalOptions="End"
+                                    FontSize="13"
+                                    BackgroundColor="IndianRed"
+                                    TextColor="WhiteSmoke"
+                                    Command="{Binding DeleteCommand}"
+                                    CommandParameter="{Binding .}" />
+                        </Grid>
+                    </DataTemplate>
+                </CollectionView.ItemTemplate>
+            </CollectionView>
+            <Label Text="{Binding CountKeyslb}"
+                   HorizontalOptions="End"
+                   FontAutoScalingEnabled="True"
+                   VerticalOptions="Fill">
+            </Label>
         </VerticalStackLayout>
-    </ScrollView>
+    </FlexLayout>
 </ContentPage>

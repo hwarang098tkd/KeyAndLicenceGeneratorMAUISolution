@@ -1,7 +1,3 @@
-using Microsoft.Maui;
-using Microsoft.Maui.Hosting;
-using System;
-
 namespace KeyAndLicenceGenerator
 {
     internal class Program : MauiApplication

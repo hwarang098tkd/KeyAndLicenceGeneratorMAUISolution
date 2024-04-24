@@ -1,7 +1,4 @@
-﻿using ObjCRuntime;
-using UIKit;
-
-namespace KeyAndLicenceGenerator
+﻿namespace KeyAndLicenceGenerator
 {
     public class Program
     {

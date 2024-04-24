@@ -5,5 +5,4 @@
 
     <x:String x:Key="user">&#xf007;</x:String>
     <x:String x:Key="arrows-rotate">&#xf287;</x:String>
-    
 </ResourceDictionary>

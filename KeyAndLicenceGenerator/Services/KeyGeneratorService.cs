@@ -6,17 +6,18 @@ namespace KeyAndLicenceGenerator.Services
 {
     internal class KeyGeneratorService
     {
-        public static void GenerateAndSaveCertificate(string commonName, string email, string country)
+        public static void GenerateAndSaveCertificate(string commonName, string email, string country, DateTime selectedDate)
         {
             try
             {
+                // Update the distinguished name to include the datetime
                 var distinguishedName = new X500DistinguishedName($"CN={commonName}, E={email}, C={country}");
 
                 using (var rsa = RSA.Create(2048)) // Adjust key size as needed
                 {
                     var request = new CertificateRequest(distinguishedName, rsa, HashAlgorithmName.SHA256, RSASignaturePadding.Pkcs1);
 
-                    var certificate = request.CreateSelfSigned(DateTimeOffset.Now, DateTimeOffset.Now.AddYears(1));
+                    var certificate = request.CreateSelfSigned(DateTimeOffset.Now, selectedDate);
 
                     string pfxPassword = "vte3UW5YgHMgpgqIXe6mkP3wcI5gcKoF";
                     var pfxBytes = certificate.Export(X509ContentType.Pfx, pfxPassword);

@@ -1,7 +1,4 @@
-﻿using Android.App;
-using Android.Runtime;
-
-namespace KeyAndLicenceGenerator
+﻿namespace KeyAndLicenceGenerator
 {
     [Application]
     public class MainApplication : MauiApplication

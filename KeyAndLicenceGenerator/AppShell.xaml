@@ -17,5 +17,4 @@
     <ShellContent Title="Άδειες"
                   ContentTemplate="{DataTemplate local:LicenceGeneratorPage}"
                   Route="LicenceGeneratorPage" />
-    
 </Shell>

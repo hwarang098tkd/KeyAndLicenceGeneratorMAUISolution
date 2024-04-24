@@ -76,6 +76,7 @@ namespace KeyAndLicenceGenerator.ViewModels
                 Debug.WriteLine(ex.Message); // Consider using a logging framework or MAUI's built-in logging
             }
         }
+
 #else
         public void LoadUsbDevices()
         {
