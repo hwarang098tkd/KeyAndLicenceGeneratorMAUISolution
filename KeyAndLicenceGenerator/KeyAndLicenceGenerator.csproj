@@ -99,6 +99,7 @@
 	<ItemGroup>
 	  <Folder Include="Keys\" />
 	  <Folder Include="Licences\" />
+	  <Folder Include="UserControls\" />
 	</ItemGroup>
 
 </Project>

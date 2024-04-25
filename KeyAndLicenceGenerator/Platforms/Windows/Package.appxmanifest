@@ -39,18 +39,6 @@
         <uap:DefaultTile Square71x71Logo="$placeholder$.png" Wide310x150Logo="$placeholder$.png" Square310x310Logo="$placeholder$.png" />
         <uap:SplashScreen Image="$placeholder$.png" />
       </uap:VisualElements>
-      <Extensions>
-        <desktop:Extension Category="windows.toastNotificationActivation">
-          <desktop:ToastNotificationActivation ToastActivatorCLSID="73fe4abc-df3a-427f-9248-ef3c75ca5d02" />
-        </desktop:Extension>
-        <com:Extension Category="windows.comServer">
-          <com:ComServer>
-            <com:ExeServer Executable="KeyAndLicenceGenerator.exe" Arguments="-ToastActivated" DisplayName="Toast Activator">
-              <com:Class Id="73fe4abc-df3a-427f-9248-ef3c75ca5d02" DisplayName="Toast Activator" />
-            </com:ExeServer>
-          </com:ComServer>
-        </com:Extension>
-      </Extensions>
     </Application>
   </Applications>
 
