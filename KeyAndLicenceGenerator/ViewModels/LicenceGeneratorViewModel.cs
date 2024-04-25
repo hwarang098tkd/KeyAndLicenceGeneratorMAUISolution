@@ -14,6 +14,12 @@ namespace KeyAndLicenceGenerator.ViewModels
     public partial class LicenceGeneratorViewModel : ObservableObject
     {
         [ObservableProperty]
+        private string countKeyslb = "Βρέθηκαν 0 άδειες";
+
+        [ObservableProperty]
+        private bool headerIsVisible;
+
+        [ObservableProperty]
         private string commonName;
 
         [ObservableProperty]
@@ -29,7 +35,7 @@ namespace KeyAndLicenceGenerator.ViewModels
         public static DateTime MaxDate => DateTime.Today.AddYears(50);
 
         [ObservableProperty]
-        private int usbDeviceSelectedIndex = 1;  // Initialize to select the first item
+        private int usbDeviceSelectedIndex = 0;  // Initialize to select the first item
 
         [ObservableProperty]
         private ObservableCollection<string> usbDeviceNames;
@@ -44,6 +50,39 @@ namespace KeyAndLicenceGenerator.ViewModels
         }
 
 #if WINDOWS
+
+        [RelayCommand]
+        public async Task DeviceFormatAsync()
+        {
+            bool forFormatAnswer = await App.Current.MainPage.DisplayAlert(
+               "ΠΡΟΣΟΧΗ",
+               $"Κάνοντας Format διαγραφούν όλα τα δεδομένα στην συσκευή!!!",
+               "FORMAT",
+               "ΑΚΥΡΩΣΗ");
+
+            // Proceed with deletion if the user confirms
+            if (forFormatAnswer)
+            {
+                //call format method form the DeviceFormatService
+                //also send the usbdevice info
+                //the user selected the usb device in the
+                /*< Picker x: Name = "usbDevicePicker"
+                        MinimumWidthRequest = "400"
+                        HorizontalOptions = "Center"
+                        HorizontalTextAlignment = "Center"
+                        ToolTipProperties.Text = "Επιλέξτε το USB για να αποθηκευτεί η άδεια. Το κλειδί θα εμπεριέχει το Serial Number της συσκευής USB."
+                        ItemsSource = "{Binding UsbDeviceNames}"
+                        SelectedIndex = "{Binding UsbDeviceSelectedIndex}"
+                        IsEnabled = "{Binding UsbDeviceIsEnabled}"
+                        Title = "Επιλέξτε Συσκευή:" >
+                </ Picker >*/
+                Debug.WriteLine("Format completed for ");
+            }
+            else
+            {
+                Debug.WriteLine("Format cancelled for ");
+            }
+        }
 
         [RelayCommand]
         public async Task LoadUsbDevicesAsync()

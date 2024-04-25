@@ -181,7 +181,6 @@ namespace KeyAndLicenceGenerator.ViewModels
             await LoadCollectionView();
         }
 
-
         private async Task DeleteKeysActionAsync(KeyFileInfo keyFile)
         {
             string appBasePath = AppDomain.CurrentDomain.BaseDirectory;
@@ -209,6 +208,5 @@ namespace KeyAndLicenceGenerator.ViewModels
                 Debug.WriteLine($"No folder found matching the date {targetFolderName}");
             }
         }
-
     }
 }

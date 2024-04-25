@@ -108,27 +108,27 @@
                     StrokeShape="RoundRectangle 8,8,0,0"
                     Background="white"
                     Padding="0">
-                <Grid BackgroundColor="#c46352"
-                  Padding="10"
-                  ColumnDefinitions="*,*,*,*,80"
-                  MaximumWidthRequest="1000"
-                  IsVisible="{Binding HeaderIsVisible}"                  >
-                <Label Text="Όνομα"
-                       Grid.Column="0"
-                       HorizontalOptions="Start" />
-                <Label Text="Ημ. Λήξης"
-                       Grid.Column="1"
-                       HorizontalOptions="Center" />                
-                <Label Text="Email"
-                       Grid.Column="2"
-                       HorizontalOptions="Center" />
-                <Label Text="Ημ Δημιουργίας"
-                       Grid.Column="3"
-                       HorizontalOptions="Center" />
-                <Label Text=""
-                       Grid.Column="4"
-                       HorizontalOptions="Center" />
-            </Grid>
+                <Grid BackgroundColor="#4c9173"
+                      Padding="10"
+                      ColumnDefinitions="*,*,*,*,80"
+                      MaximumWidthRequest="1000"
+                      IsVisible="{Binding HeaderIsVisible}">
+                    <Label Text="Όνομα"
+                           Grid.Column="0"
+                           HorizontalOptions="Start" />
+                    <Label Text="Ημ. Λήξης"
+                           Grid.Column="1"
+                           HorizontalOptions="Center" />
+                    <Label Text="Email"
+                           Grid.Column="2"
+                           HorizontalOptions="Center" />
+                    <Label Text="Ημ Δημιουργίας"
+                           Grid.Column="3"
+                           HorizontalOptions="Center" />
+                    <Label Text=""
+                           Grid.Column="4"
+                           HorizontalOptions="Center" />
+                </Grid>
             </Border>
         </VerticalStackLayout>
 
@@ -150,7 +150,7 @@
                                HorizontalOptions="Start" />
                         <Label Text="{Binding ExpirationDate, StringFormat='{0:MM/dd/yyyy}'}"
                                Grid.Column="1"
-                               HorizontalOptions="Center" />                        
+                               HorizontalOptions="Center" />
                         <Label Text="{Binding Email}"
                                Grid.Column="2"
                                HorizontalOptions="Center" />
