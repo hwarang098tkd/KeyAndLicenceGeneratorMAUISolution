@@ -116,7 +116,18 @@
                         Command="{Binding DeviceFormatCommand}"
                         HorizontalOptions="End"
                         ToolTipProperties.Text="ΠΡΟΣΟΧΗ: Θα διαγραφούν όλα τα δεδομένα" />
+                <!-- ProgressBar in your XAML -->
             </HorizontalStackLayout>
+
+            <ProgressBar Progress="{Binding ProgressBarProgress}"
+                         ProgressColor="DarkGreen"
+                         HorizontalOptions="FillAndExpand"
+                         IsVisible="{Binding ProgressBarProgressVisible}">
+                <ProgressBar.Behaviors>
+                    <toolkit:ProgressBarAnimationBehavior Progress="{Binding ProgressBarProgress}"
+                                                          Length="500" />
+                </ProgressBar.Behaviors>
+            </ProgressBar>
 
             <Button Clicked="LicenceClicked"
                     Text="Generate Keys"

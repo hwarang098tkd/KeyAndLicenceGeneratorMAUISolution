@@ -1,5 +1,6 @@
 ﻿using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
+using KeyAndLicenceGenerator.Services;
 using System.Collections.ObjectModel;
 using System.Diagnostics;
 
@@ -13,6 +14,12 @@ namespace KeyAndLicenceGenerator.ViewModels
 {
     public partial class LicenceGeneratorViewModel : ObservableObject
     {
+        [ObservableProperty]
+        private double progressBarProgress;
+
+        [ObservableProperty]
+        private bool progressBarProgressVisible = false;
+
         [ObservableProperty]
         private string countKeyslb = "Βρέθηκαν 0 άδειες";
 
@@ -54,33 +61,59 @@ namespace KeyAndLicenceGenerator.ViewModels
         [RelayCommand]
         public async Task DeviceFormatAsync()
         {
-            bool forFormatAnswer = await App.Current.MainPage.DisplayAlert(
-               "ΠΡΟΣΟΧΗ",
-               $"Κάνοντας Format διαγραφούν όλα τα δεδομένα στην συσκευή!!!",
-               "FORMAT",
-               "ΑΚΥΡΩΣΗ");
+            if (UsbDeviceSelectedIndex < 0 || UsbDeviceSelectedIndex >= UsbDeviceNames.Count)
+            {
+                Debug.WriteLine("No USB device selected or invalid selection.");
+                return;
+            }
 
-            // Proceed with deletion if the user confirms
+            string selectedDevice = UsbDeviceNames[UsbDeviceSelectedIndex];
+            string driveLetter = selectedDevice.Split('|')[0].Trim();
+
+            bool forFormatAnswer = await App.Current.MainPage.DisplayAlert(
+                "ΠΡΟΣΟΧΗ",
+                $"Κάνοντας Format διαγραφούν όλα τα δεδομένα στην συσκευή {driveLetter}!!!",
+                "FORMAT",
+                "ΑΚΥΡΩΣΗ");
+
             if (forFormatAnswer)
             {
-                //call format method form the DeviceFormatService
-                //also send the usbdevice info
-                //the user selected the usb device in the
-                /*< Picker x: Name = "usbDevicePicker"
-                        MinimumWidthRequest = "400"
-                        HorizontalOptions = "Center"
-                        HorizontalTextAlignment = "Center"
-                        ToolTipProperties.Text = "Επιλέξτε το USB για να αποθηκευτεί η άδεια. Το κλειδί θα εμπεριέχει το Serial Number της συσκευής USB."
-                        ItemsSource = "{Binding UsbDeviceNames}"
-                        SelectedIndex = "{Binding UsbDeviceSelectedIndex}"
-                        IsEnabled = "{Binding UsbDeviceIsEnabled}"
-                        Title = "Επιλέξτε Συσκευή:" >
-                </ Picker >*/
-                Debug.WriteLine("Format completed for ");
+                var formatService = new DeviceFormatService();
+                var cts = new CancellationTokenSource();
+
+                Task formattingTask = formatService.FormatDriveAsync(driveLetter, "EMMETRON_LC");
+                Task simulateProgressTask = SimulateProgressAsync(cts.Token);
+
+                ProgressBarProgressVisible = true;
+
+                await formattingTask;  // Wait for the formatting to complete
+
+                cts.Cancel();  // Cancel the simulation task
+                try
+                {
+                    await simulateProgressTask;  // Ensure the simulation task completes gracefully
+                }
+                catch (TaskCanceledException)
+                {
+                    Debug.WriteLine("Progress simulation cancelled.");
+                }
+
+                ProgressBarProgressVisible = false;
+                ProgressBarProgress = 0;  // Reset progress after completion
+                Debug.WriteLine("Format completed for " + driveLetter);
             }
             else
             {
-                Debug.WriteLine("Format cancelled for ");
+                Debug.WriteLine("Format cancelled for " + driveLetter);
+            }
+        }
+
+        private async Task SimulateProgressAsync(CancellationToken cancellationToken)
+        {
+            while (!cancellationToken.IsCancellationRequested)
+            {
+                await Task.Delay(200);  // Simulate ongoing activity
+                ProgressBarProgress = (ProgressBarProgress + 0.1) % 1.0;  // Update progress cyclically
             }
         }
 
