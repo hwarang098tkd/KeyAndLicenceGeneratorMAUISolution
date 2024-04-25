@@ -24,11 +24,12 @@
         </Style>
     </ContentPage.Resources>
 
-    <ScrollView>
-        <VerticalStackLayout Padding="0,60,0,0"
-                             Spacing="30"
-                             HorizontalOptions="Center"
-                             MinimumWidthRequest="500"
+    <Grid RowDefinitions="Auto,*,Auto"
+          RowSpacing="20"
+          Padding="0,0,0,10">
+        <VerticalStackLayout Grid.Row="0"
+                             Padding="5,60,20,0"
+                             Spacing="15"
                              MaximumWidthRequest="1000">
             <Label Text="Εισάγετε τα στοιχεία της Άδειας του Πελάτη"
                    FontAttributes="Bold"
@@ -38,7 +39,6 @@
                    Text="{Binding CommonName, Mode=TwoWay}"
                    Placeholder="Εταιρεία Πελάτη"
                    HorizontalOptions="FillAndExpand"
-                   MaximumWidthRequest="1000"
                    ToolTipProperties.Text="Εισάγετε την επωνυμία της εταιρείας του πελάτη">
                 <Entry.Behaviors>
                     <toolkit:CharactersValidationBehavior InvalidStyle="{StaticResource InvalidEntryStyle}"
@@ -52,7 +52,6 @@
                    Text="{Binding Email, Mode=TwoWay}"
                    Placeholder="Email Πελάτη"
                    HorizontalOptions="Fill"
-                   MaximumWidthRequest="1000"
                    ToolTipProperties.Text="Εισάγετε το email της εταιρείας του πελάτη">
                 <Entry.Behaviors>
                     <toolkit:EmailValidationBehavior InvalidStyle="{StaticResource InvalidEntryStyle}"
@@ -65,7 +64,6 @@
                    Text="{Binding Country, Mode=TwoWay}"
                    Placeholder="Χώρα (C)"
                    HorizontalOptions="Fill"
-                   MaximumWidthRequest="1000"
                    ToolTipProperties.Text="Εισάγετε την χώρα που εδρείει η εταιρεία του πελάτη">
                 <Entry.Behaviors>
                     <toolkit:CharactersValidationBehavior InvalidStyle="{StaticResource InvalidEntryStyle}"
@@ -86,7 +84,6 @@
                             MaximumDate="{Binding MaxDate}"
                             Date="{Binding SelectedDate, Mode=TwoWay}"
                             HorizontalOptions="Center"
-                            MaximumWidthRequest="1000"
                             ToolTipProperties.Text="Προσοχή να μην υπερβαίνει την ημερομηνίά λήξης του κλειδιού">
                     <DatePicker.Behaviors>
                         <toolkit:CharactersValidationBehavior InvalidStyle="{StaticResource InvalidEntryStyle}"
@@ -105,7 +102,6 @@
 
                 <Picker x:Name="usbDevicePicker"
                         MinimumWidthRequest="400"
-                        WidthRequest="400"
                         HorizontalOptions="Center"
                         HorizontalTextAlignment="Center"
                         ToolTipProperties.Text="Επιλέξτε το USB για να αποθηκευτεί η άδεια. Το κλειδί θα εμπεριέχει το Serial Number της συσκευής USB."
@@ -119,7 +115,6 @@
                 <Button Text="FORMAT"
                         Clicked="OnFormatClicked"
                         HorizontalOptions="End"
-                        WidthRequest="100"
                         ToolTipProperties.Text="ΠΡΟΣΟΧΗ: Θα διαγραφούν όλα τα δεδομένα" />
             </HorizontalStackLayout>
 
@@ -128,6 +123,80 @@
                     HorizontalOptions="Fill"
                     IsEnabled="{Binding IsFormValid}"
                     ToolTipProperties.Text="Δημιουργία Άδειας Πελάτη. Θα σας ζητηθεί να αποθηκεύσετε αντίγραφο στον υπολογιστή σας ενώ η αποθήκευση στο USB γίνει αυτόματα" />
+            <Border Stroke="WhiteSmoke"
+                    StrokeThickness="1"
+                    StrokeShape="RoundRectangle 8,8,0,0"
+                    Background="white"
+                    Padding="0">
+                <Grid BackgroundColor="#c46352"
+                      Padding="10"
+                      ColumnDefinitions="*,*,*,*,80"
+                      MaximumWidthRequest="1000"
+                      IsVisible="{Binding HeaderIsVisible}">
+                    <Label Text="Όνομα"
+                           Grid.Column="0"
+                           HorizontalOptions="Start" />
+                    <Label Text="Ημ. Λήξης"
+                           Grid.Column="1"
+                           HorizontalOptions="Center" />
+                    <Label Text="Email"
+                           Grid.Column="2"
+                           HorizontalOptions="Center" />
+                    <Label Text="Ημ Δημιουργίας"
+                           Grid.Column="3"
+                           HorizontalOptions="Center" />
+                    <Label Text=""
+                           Grid.Column="4"
+                           HorizontalOptions="Center" />
+                </Grid>
+            </Border>
         </VerticalStackLayout>
-    </ScrollView>
+        <!-- Data Items -->
+        <CollectionView ItemsSource="{Binding KeyFiles}"
+                        SelectionMode="Single"
+                        VerticalOptions="FillAndExpand"
+                        Grid.Row="1"
+                        MinimumHeightRequest="400">
+            <CollectionView.ItemTemplate>
+                <DataTemplate>
+                    <Grid Padding="10"
+                          ColumnSpacing="0"
+                          RowSpacing="1"
+                          ColumnDefinitions="*,*,*,*,80"
+                          MaximumWidthRequest="1000">
+                        <Label Text="{Binding FileName}"
+                               Grid.Column="0"
+                               HorizontalOptions="Start" />
+                        <Label Text="{Binding ExpirationDate, StringFormat='{0:MM/dd/yyyy}'}"
+                               Grid.Column="1"
+                               HorizontalOptions="Center" />
+                        <Label Text="{Binding Email}"
+                               Grid.Column="2"
+                               HorizontalOptions="Center" />
+                        <Label Text="{Binding CreationDate, StringFormat='{0:MM/dd/yyyy - hh:mm:ss}'}"
+                               Grid.Column="3"
+                               HorizontalOptions="Center" />
+                        <Button Text="DELETE"
+                                Grid.Column="4"
+                                HorizontalOptions="End"
+                                FontSize="13"
+                                BackgroundColor="IndianRed"
+                                TextColor="WhiteSmoke"
+                                Command="{Binding Source={x:Reference KeyGeneratorPage}, Path=BindingContext.DeleteKeysCommand}"
+                                CommandParameter="{Binding}" />
+                    </Grid>
+                </DataTemplate>
+            </CollectionView.ItemTemplate>
+        </CollectionView>
+        <VerticalStackLayout Grid.Row="2"
+                             Padding="0,0,0,0"
+                             MaximumWidthRequest="1000">
+            <Label Text="{Binding CountKeyslb}"
+                   HorizontalOptions="End"
+                   Padding="0,0,10,10"
+                   FontAutoScalingEnabled="True"
+                   VerticalOptions="Fill">
+            </Label>
+        </VerticalStackLayout>
+    </Grid>
 </ContentPage>

@@ -15,6 +15,9 @@ namespace KeyAndLicenceGenerator.ViewModels
         private string countKeyslb;
 
         [ObservableProperty]
+        private bool headerIsVisible;
+
+        [ObservableProperty]
         private ObservableCollection<KeyFileInfo> keyFiles;
 
         [ObservableProperty]
@@ -83,7 +86,7 @@ namespace KeyAndLicenceGenerator.ViewModels
 
                     temporaryList.Add(new KeyFileInfo
                     {
-                        FileName = Path.GetFileName(file),
+                        FileName = Path.GetFileName(file).Replace("_Key.pfx", ""),
                         FilePath = file,
                         ExpirationDate = cert.NotAfter,
                         CommonName = cert.GetNameInfo(X509NameType.SimpleName, false),
@@ -106,6 +109,14 @@ namespace KeyAndLicenceGenerator.ViewModels
             foreach (var fileInfo in sortedList)
             {
                 KeyFiles.Add(fileInfo);
+            }
+            if (counter <= 0)
+            {
+                HeaderIsVisible = false;
+            }
+            else
+            {
+                HeaderIsVisible = true;
             }
             CountKeyslb = $"Βρέθηκαν {counter} κλειδιά";
         }
@@ -149,7 +160,55 @@ namespace KeyAndLicenceGenerator.ViewModels
         private async Task DeleteKeysAsync(KeyFileInfo keyFile)
         {
             Debug.WriteLine($"Deleting key: Pressed {keyFile.CreationDate}");
+            // Prompt the user for confirmation before deletion
+            bool forDeleteAnswer = await App.Current.MainPage.DisplayAlert(
+                "ΠΡΟΣΟΧΗ",
+                $"Θέλετε να διαγράψετε το κλειδί {keyFile.CommonName} ;",
+                "NAI",
+                "ΑΚΥΡΩΣΗ");
+
+            // Proceed with deletion if the user confirms
+            if (forDeleteAnswer)
+            {
+                await DeleteKeysActionAsync(keyFile);  // Call the deletion method
+                Debug.WriteLine("Deletion completed for " + keyFile.FileName);
+            }
+            else
+            {
+                Debug.WriteLine("Deletion cancelled for " + keyFile.FileName);
+            }
+
             await LoadCollectionView();
         }
+
+
+        private async Task DeleteKeysActionAsync(KeyFileInfo keyFile)
+        {
+            string appBasePath = AppDomain.CurrentDomain.BaseDirectory;
+            string keysDirectoryPath = Path.Combine(appBasePath, "Keys");
+            string targetFolderName = keyFile.CreationDate.ToString("yyyy_M_d_HH'h'_mm'm'_ss's'");
+            string targetFolderPath = Path.Combine(keysDirectoryPath, targetFolderName);
+            if (Directory.Exists(targetFolderPath))
+            {
+                try
+                {
+                    Directory.Delete(targetFolderPath, true);
+                    Debug.WriteLine($"Successfully deleted folder: {targetFolderPath}");
+                }
+                catch (Exception ex)
+                {
+                    Debug.WriteLine($"Error deleting folder {targetFolderPath}: {ex.Message}");
+                }
+            }
+            else
+            {
+                await App.Current.MainPage.DisplayAlert(
+                "ΠΡΟΣΟΧΗ",
+                $"Δεν βρέθηκε το κλειδί {keyFile.CommonName} !!!",
+                "OK");
+                Debug.WriteLine($"No folder found matching the date {targetFolderName}");
+            }
+        }
+
     }
 }

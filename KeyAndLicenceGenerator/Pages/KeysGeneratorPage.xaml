@@ -103,30 +103,33 @@
                   X2="0"
                   Y2="0"
                   Stroke="Black" />
-
-            <Grid BackgroundColor="#EEE"
+            <Border Stroke="WhiteSmoke"
+                    StrokeThickness="1"
+                    StrokeShape="RoundRectangle 8,8,0,0"
+                    Background="white"
+                    Padding="0">
+                <Grid BackgroundColor="#c46352"
                   Padding="10"
-                  ColumnDefinitions="*,*,*,*,*,80"
-                  MaximumWidthRequest="1000">
-                <Label Text="File Name"
+                  ColumnDefinitions="*,*,*,*,80"
+                  MaximumWidthRequest="1000"
+                  IsVisible="{Binding HeaderIsVisible}"                  >
+                <Label Text="Όνομα"
                        Grid.Column="0"
                        HorizontalOptions="Start" />
-                <Label Text="Expiration Date"
+                <Label Text="Ημ. Λήξης"
                        Grid.Column="1"
-                       HorizontalOptions="Center" />
-                <Label Text="Common Name"
+                       HorizontalOptions="Center" />                
+                <Label Text="Email"
                        Grid.Column="2"
                        HorizontalOptions="Center" />
-                <Label Text="Email"
+                <Label Text="Ημ Δημιουργίας"
                        Grid.Column="3"
                        HorizontalOptions="Center" />
-                <Label Text="Creation Date"
+                <Label Text=""
                        Grid.Column="4"
                        HorizontalOptions="Center" />
-                <Label Text="Actions"
-                       Grid.Column="5"
-                       HorizontalOptions="Center" />
             </Grid>
+            </Border>
         </VerticalStackLayout>
 
         <!-- Data Items -->
@@ -140,25 +143,22 @@
                     <Grid Padding="10"
                           ColumnSpacing="0"
                           RowSpacing="1"
-                          ColumnDefinitions="*,*,*,*,*,80"
+                          ColumnDefinitions="*,*,*,*,80"
                           MaximumWidthRequest="1000">
                         <Label Text="{Binding FileName}"
                                Grid.Column="0"
                                HorizontalOptions="Start" />
                         <Label Text="{Binding ExpirationDate, StringFormat='{0:MM/dd/yyyy}'}"
                                Grid.Column="1"
-                               HorizontalOptions="Center" />
-                        <Label Text="{Binding CommonName}"
+                               HorizontalOptions="Center" />                        
+                        <Label Text="{Binding Email}"
                                Grid.Column="2"
                                HorizontalOptions="Center" />
-                        <Label Text="{Binding Email}"
+                        <Label Text="{Binding CreationDate, StringFormat='{0:MM/dd/yyyy - hh:mm:ss}'}"
                                Grid.Column="3"
                                HorizontalOptions="Center" />
-                        <Label Text="{Binding CreationDate, StringFormat='{0:MM/dd/yyyy - hh:mm:ss}'}"
-                               Grid.Column="4"
-                               HorizontalOptions="Center" />
                         <Button Text="DELETE"
-                                Grid.Column="5"
+                                Grid.Column="4"
                                 HorizontalOptions="End"
                                 FontSize="13"
                                 BackgroundColor="IndianRed"
