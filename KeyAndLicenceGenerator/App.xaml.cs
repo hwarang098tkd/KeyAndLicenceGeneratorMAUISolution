@@ -1,11 +1,18 @@
-﻿namespace KeyAndLicenceGenerator;
+﻿using Microsoft.Toolkit.Uwp.Notifications;
+
+namespace KeyAndLicenceGenerator;
 
 public partial class App : Application
 {
     public App()
     {
         InitializeComponent();
-
+        // Add this inside the constructor or initialization method of your App
+        ToastNotificationManagerCompat.OnActivated += notificationArgs =>
+        {
+            // Handle activation here
+            // You can parse notificationArgs to respond to user interactions
+        };
         MainPage = new AppShell();
     }
 

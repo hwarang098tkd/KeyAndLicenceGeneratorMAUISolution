@@ -112,7 +112,8 @@
                 </Picker>
 
                 <!-- Button to trigger formatting based on selected option -->
-                <Button Text="FORMAT"
+                <Button Clicked="OnFormatClicked"
+                    Text="FORMAT"
                         Command="{Binding DeviceFormatCommand}"
                         HorizontalOptions="End"
                         ToolTipProperties.Text="ΠΡΟΣΟΧΗ: Θα διαγραφούν όλα τα δεδομένα" />
