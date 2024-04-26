@@ -113,7 +113,7 @@
 
                 <!-- Button to trigger formatting based on selected option -->
                 <Button Clicked="OnFormatClicked"
-                    Text="FORMAT"
+                        Text="FORMAT"
                         Command="{Binding DeviceFormatCommand}"
                         HorizontalOptions="End"
                         ToolTipProperties.Text="ΠΡΟΣΟΧΗ: Θα διαγραφούν όλα τα δεδομένα" />
@@ -130,7 +130,7 @@
                 </ProgressBar.Behaviors>
             </ProgressBar>
 
-            <Button Clicked="LicenceClicked"
+            <Button Command="{Binding LicenceGenerateCommand}"
                     Text="Generate Keys"
                     HorizontalOptions="Fill"
                     IsEnabled="{Binding IsFormValid}"

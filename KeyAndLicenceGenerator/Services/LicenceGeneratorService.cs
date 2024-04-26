@@ -1,8 +1,8 @@
-﻿using System.Diagnostics;
+﻿using KeyAndLicenceGenerator.Interfaces;
+using System.Diagnostics;
 using System.Security.Cryptography;
 using System.Security.Cryptography.X509Certificates;
 using System.Text;
-using KeyAndLicenceGenerator.Interfaces;
 using UsbDeviceLibrary.Model;
 
 namespace KeyAndLicenceGenerator.Services
@@ -52,8 +52,8 @@ namespace KeyAndLicenceGenerator.Services
                 string base64LicenseInfo = Convert.ToBase64String(dataToSign);
 
                 string licenseKey = $"{base64LicenseInfo}.{base64Signature}";
-                SaveLicenseKeyToUSB(usbDriveInfo.DriveLetter, licenseKey);
-                SaveLicenseKeyToFile(companyName, licenseKey);
+                bool resultSaveToUsb = SaveLicenseKeyToUSB(usbDriveInfo.DriveLetter, licenseKey);
+                bool resultSaveToFile = await SaveLicenseKeyToFile(companyName, licenseKey);
                 Debug.WriteLine("License key generated and displayed successfully.");
                 return true;
             }
@@ -64,7 +64,7 @@ namespace KeyAndLicenceGenerator.Services
             }
         }
 
-        private void SaveLicenseKeyToUSB(string driveLetter, string licenseKey)
+        private static bool SaveLicenseKeyToUSB(string driveLetter, string licenseKey)
         {
             try
             {
@@ -77,10 +77,12 @@ namespace KeyAndLicenceGenerator.Services
                 string filePath = Path.Combine(directoryPath, "license.key");
                 File.WriteAllText(filePath, licenseKey);
                 File.SetAttributes(filePath, File.GetAttributes(filePath) | FileAttributes.Hidden);
+                return true;
             }
             catch (Exception ex)
             {
                 Debug.WriteLine(ex);
+                return false;
             }
         }
 

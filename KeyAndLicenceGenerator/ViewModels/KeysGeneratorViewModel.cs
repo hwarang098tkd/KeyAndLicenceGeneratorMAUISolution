@@ -5,7 +5,6 @@ using KeyAndLicenceGenerator.Services;
 using System.Collections.ObjectModel;
 using System.Diagnostics;
 using System.Security.Cryptography.X509Certificates;
-using System.Text.RegularExpressions;
 
 namespace KeyAndLicenceGenerator.ViewModels
 {
@@ -39,9 +38,7 @@ namespace KeyAndLicenceGenerator.ViewModels
         public DateTime MinDate => DateTime.Today.AddDays(1);
         public DateTime MaxDate => DateTime.Today.AddYears(50);
 
-        public bool IsFormValid => ValidateForm();
-        private readonly string emailPattern = @"^[^@\s]+@[^@\s]+\.[^@\s]+$"; // Email validation pattern
-        private readonly string specialCharsPattern = @"[^a-zA-Z0-9\s]"; // Detects special characters
+        public bool IsFormValid => ValidateFormChecker();
 
         public KeysGeneratorViewModel()
         {
@@ -53,6 +50,13 @@ namespace KeyAndLicenceGenerator.ViewModels
         {
             keyFiles.Clear();
             await LoadKeyFiles();
+        }
+
+        public bool ValidateFormChecker()
+        {
+            var validationService = new ValidationFormService();
+            var result = validationService.ValidateForm(Email, CommonName, Country, SelectedDate);
+            return result;
         }
 
         private async Task LoadKeyFiles()
@@ -119,33 +123,6 @@ namespace KeyAndLicenceGenerator.ViewModels
                 HeaderIsVisible = true;
             }
             CountKeyslb = $"Βρέθηκαν {counter} κλειδιά";
-        }
-
-        private bool ValidateForm()
-        {
-            Debug.WriteLine($"Validating... Email: {email}, Common Name: {commonName}, Country: {country}, Date: {selectedDate}");
-
-            // Validate email
-            bool isValidEmail = !string.IsNullOrWhiteSpace(email) &&
-                                Regex.IsMatch(email, emailPattern) &&
-                                email.Contains('@') && email.Contains('.');
-
-            // Validate common name and country for minimum length and no special characters
-            bool isCommonNameValid = !string.IsNullOrWhiteSpace(commonName) &&
-                                     commonName.Length >= 3 &&
-                                     !Regex.IsMatch(commonName, specialCharsPattern);
-
-            bool isCountryValid = !string.IsNullOrWhiteSpace(country) &&
-                                  country.Length >= 3 &&
-                                  !Regex.IsMatch(country, specialCharsPattern);
-
-            // Validate date
-            bool isDateValid = selectedDate > DateTime.Today;
-
-            // Overall validity
-            bool isValid = isValidEmail && isCommonNameValid && isCountryValid && isDateValid;
-            Debug.WriteLine($"Is form valid: {isValid}");
-            return isValid;
         }
 
         [RelayCommand]

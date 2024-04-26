@@ -70,6 +70,14 @@
 	</ItemGroup>
 
 	<ItemGroup>
+	  <Compile Remove="UserControls\**" />
+	  <EmbeddedResource Remove="UserControls\**" />
+	  <MauiCss Remove="UserControls\**" />
+	  <MauiXaml Remove="UserControls\**" />
+	  <None Remove="UserControls\**" />
+	</ItemGroup>
+
+	<ItemGroup>
 		<PackageReference Include="CommunityToolkit.Maui" Version="8.0.1" />
 		<PackageReference Include="CommunityToolkit.Maui.Markup" Version="4.0.0" />
 		<PackageReference Include="CommunityToolkit.Mvvm" Version="8.2.2" />
@@ -85,6 +93,9 @@
 	</ItemGroup>
 
 	<ItemGroup>
+	  <MauiXaml Update="ContentViews\SearchPicker.xaml">
+	    <Generator>MSBuild:Compile</Generator>
+	  </MauiXaml>
 	  <MauiXaml Update="Pages\KeysGeneratorPage.xaml">
 	    <Generator>MSBuild:Compile</Generator>
 	  </MauiXaml>
@@ -99,7 +110,16 @@
 	<ItemGroup>
 	  <Folder Include="Keys\" />
 	  <Folder Include="Licences\" />
-	  <Folder Include="UserControls\" />
+	</ItemGroup>
+
+	<ItemGroup>
+	  <PRIResource Remove="UserControls\**" />
+	</ItemGroup>
+
+	<ItemGroup>
+	  <Compile Update="ContentViews\SearchPicker.xaml.cs">
+	    <DependentUpon>SearchPicker.xaml</DependentUpon>
+	  </Compile>
 	</ItemGroup>
 
 </Project>

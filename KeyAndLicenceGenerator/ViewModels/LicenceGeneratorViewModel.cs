@@ -3,6 +3,7 @@ using CommunityToolkit.Mvvm.Input;
 using KeyAndLicenceGenerator.Services;
 using System.Collections.ObjectModel;
 using System.Diagnostics;
+using UsbDeviceLibrary.Model;
 
 #if WINDOWS
 
@@ -14,6 +15,8 @@ namespace KeyAndLicenceGenerator.ViewModels
 {
     public partial class LicenceGeneratorViewModel : ObservableObject
     {
+        private List<UsbDriveInfo> usbDeviceList { get; set; }
+
         [ObservableProperty]
         private double progressBarProgress;
 
@@ -27,22 +30,28 @@ namespace KeyAndLicenceGenerator.ViewModels
         private bool headerIsVisible;
 
         [ObservableProperty]
+        [NotifyPropertyChangedFor(nameof(IsFormValid))]
         private string commonName;
 
         [ObservableProperty]
+        [NotifyPropertyChangedFor(nameof(IsFormValid))]
         private string email;
 
         [ObservableProperty]
+        [NotifyPropertyChangedFor(nameof(IsFormValid))]
         private string country;
 
         [ObservableProperty]
+        [NotifyPropertyChangedFor(nameof(IsFormValid))]
         private DateTime selectedDate = DateTime.Today.Date.AddYears(1);
 
         public static DateTime MinDate => DateTime.Today.AddDays(1);
         public static DateTime MaxDate => DateTime.Today.AddYears(50);
 
+        public bool IsFormValid => ValidateFormChecker();
+
         [ObservableProperty]
-        private int usbDeviceSelectedIndex = 0;  // Initialize to select the first item
+        private int usbDeviceSelectedIndex = 0;
 
         [ObservableProperty]
         private ObservableCollection<string> usbDeviceNames;
@@ -52,11 +61,75 @@ namespace KeyAndLicenceGenerator.ViewModels
 
         public LicenceGeneratorViewModel()
         {
-            UsbDeviceNames = []; // Correct initialization
-            _ = LoadUsbDevicesAsync(); // Load USB devices at initialization
+            UsbDeviceNames = [];
+            _ = LoadUsbDevicesAsync();
+        }
+
+        public bool ValidateFormChecker()
+        {
+            var validationService = new ValidationFormService();
+            var result = validationService.ValidateForm(Email, CommonName, Country, SelectedDate);
+            return result;
         }
 
 #if WINDOWS
+
+        [RelayCommand]
+        public async Task LicenceGenerateAsync()
+        {
+            try
+            {
+                if (string.IsNullOrWhiteSpace(CommonName) || string.IsNullOrWhiteSpace(Email))
+                {
+                    Debug.WriteLine("Company name and email are required.");
+                    return;
+                }
+
+                if (UsbDeviceSelectedIndex < 0 || UsbDeviceSelectedIndex >= UsbDeviceNames.Count)
+                {
+                    Debug.WriteLine("No USB device selected or invalid selection.");
+                    return;
+                }
+
+                string selectedDevice = UsbDeviceNames[UsbDeviceSelectedIndex];
+                string driveLetter = selectedDevice.Split('|')[0].Trim();
+
+                var licenceGeneratorService = new LicenceGeneratorService();
+
+                bool licenceGenerated = await licenceGeneratorService.GenerateAndSaveLicense(
+                    CommonName,
+                    Email,
+                    SelectedDate,
+                    GetUsbDevice(driveLetter),
+                    "path_to_pfx_file");
+
+                if (licenceGenerated)
+                {
+                    Debug.WriteLine("License generated and saved successfully.");
+                }
+                else
+                {
+                    Debug.WriteLine("Failed to generate and save license.");
+                }
+            }
+            catch (Exception ex)
+            {
+                Debug.WriteLine(ex, "Error occurred while generating and saving license.");
+            }
+        }
+
+        private UsbDriveInfo? GetUsbDevice(string driveLetter)
+        {
+            foreach (UsbDriveInfo device in usbDeviceList)
+            {
+                if (device.DriveLetter == driveLetter)
+                {
+                    return device;
+                }
+            }
+            // Return null if no matching device is found after checking the whole list
+            return null;
+        }
 
         [RelayCommand]
         public async Task DeviceFormatAsync()
@@ -123,7 +196,7 @@ namespace KeyAndLicenceGenerator.ViewModels
             try
             {
                 UsbDeviceNames.Clear();
-                var usbDrives = await UsbDriveSearcher.GetUsbDrivesAsync(); // Correctly await the async call
+                var usbDrives = usbDeviceList = await UsbDriveSearcher.GetUsbDrivesAsync(); // Correctly await the async call
                 if (usbDrives.Count > 0) // Check if there are any USB devices found
                 {
                     foreach (var drive in usbDrives)
