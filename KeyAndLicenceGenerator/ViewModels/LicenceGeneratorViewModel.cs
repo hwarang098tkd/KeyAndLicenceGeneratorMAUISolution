@@ -52,8 +52,8 @@ namespace KeyAndLicenceGenerator.ViewModels
 
         public LicenceGeneratorViewModel()
         {
-            UsbDeviceNames = new ObservableCollection<string>(); // Correct initialization
-            LoadUsbDevicesAsync(); // Load USB devices at initialization
+            UsbDeviceNames = []; // Correct initialization
+            _ = LoadUsbDevicesAsync(); // Load USB devices at initialization
         }
 
 #if WINDOWS
