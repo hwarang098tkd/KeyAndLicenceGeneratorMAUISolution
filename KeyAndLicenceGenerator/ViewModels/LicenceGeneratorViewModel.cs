@@ -131,6 +131,7 @@ namespace KeyAndLicenceGenerator.ViewModels
             return null;
         }
 
+        //FORMAT
         [RelayCommand]
         public async Task DeviceFormatAsync()
         {
@@ -160,7 +161,7 @@ namespace KeyAndLicenceGenerator.ViewModels
                 ProgressBarProgressVisible = true;
 
                 await formattingTask;  // Wait for the formatting to complete
-
+                await LoadUsbDevicesAsync();
                 cts.Cancel();  // Cancel the simulation task
                 try
                 {

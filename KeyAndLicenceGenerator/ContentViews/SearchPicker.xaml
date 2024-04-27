@@ -7,10 +7,22 @@
     <ContentView.BindingContext>
         <vm:SearchPickerViewModel />
     </ContentView.BindingContext>
-
+    <ContentView.Resources>
+        <Style x:Key="BorderlessEntry"
+               TargetType="Entry">
+            <Setter Property="Background"
+                    Value="Transparent" />
+            <Setter Property="BackgroundColor"
+                    Value="Red" />
+            <!-- Add other style settings if necessary -->
+        </Style>
+    </ContentView.Resources>
     <VerticalStackLayout>
         <Entry x:Name="filterEntry"
-               Text="{Binding EntryText, Mode=OneWay}" />
+               Text="{Binding EntryText, Mode=OneWay}"
+               Style="{StaticResource BorderlessEntry}">
+        </Entry>
+
         <Picker x:Name="itemsPicker"
                 ItemsSource="{Binding PickerItems}"
                 SelectedIndex="{Binding PickerSelectedIndex}"

@@ -5,7 +5,8 @@
              Title="Γεννήτρια Αδειών"
              xmlns:vm="clr-namespace:KeyAndLicenceGenerator.ViewModels"
              xmlns:toolkit="http://schemas.microsoft.com/dotnet/2022/maui/toolkit"
-             ControlTemplate="{StaticResource PageTemplate}">
+             ControlTemplate="{StaticResource PageTemplate}"
+             xmlns:controls="clr-namespace:KeyAndLicenceGenerator.ContentViews">
 
     <ContentPage.BindingContext>
         <vm:LicenceGeneratorViewModel />
@@ -73,7 +74,9 @@
                 </Entry.Behaviors>
             </Entry>
             <HorizontalStackLayout Padding="10"
-                                   Spacing="10">
+                                   Spacing="30"
+                                   Margin="10"
+                                   HorizontalOptions="Center">
                 <Label Text="Ημερομηνία Λήξης:"
                        HorizontalOptions="Start"
                        VerticalTextAlignment="Center" />
@@ -91,9 +94,13 @@
                                                               Flags="ValidateOnValueChanged" />
                     </DatePicker.Behaviors>
                 </DatePicker>
+                <controls:SearchPicker HorizontalOptions="Fill"
+                                       WidthRequest="300"
+                                       />
             </HorizontalStackLayout>
             <HorizontalStackLayout Padding="5"
-                                   Spacing="5">
+                                   Spacing="5"
+                                   HorizontalOptions="Center">
                 <Button x:Name="usbDeviceRefresh_btn"
                         FontFamily="FABrandsRegular"
                         Text="{StaticResource Key=arrows-rotate}"
@@ -101,9 +108,8 @@
                 </Button>
 
                 <Picker x:Name="usbDevicePicker"
-                        MinimumWidthRequest="400"
-                        HorizontalOptions="Center"
                         HorizontalTextAlignment="Center"
+                        WidthRequest="420"
                         ToolTipProperties.Text="Επιλέξτε το USB για να αποθηκευτεί η άδεια. Το κλειδί θα εμπεριέχει το Serial Number της συσκευής USB."
                         ItemsSource="{Binding UsbDeviceNames}"
                         SelectedIndex="{Binding UsbDeviceSelectedIndex}"
