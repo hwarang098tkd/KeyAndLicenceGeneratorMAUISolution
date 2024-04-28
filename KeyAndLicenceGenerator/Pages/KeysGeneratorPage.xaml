@@ -27,9 +27,9 @@
 
     <Grid RowDefinitions="Auto,*,Auto"
           RowSpacing="20"
-          Padding="0,0,0,10">
+          MaximumWidthRequest="800"
+          Padding="20,30,20,10">
         <VerticalStackLayout Grid.Row="0"
-                             Padding="5,60,20,0"
                              Spacing="15"
                              MaximumWidthRequest="1000">
             <Label Text="Εισάγετε τα στοιχεία του κλειδιού"
@@ -110,12 +110,11 @@
                     Padding="0">
                 <Grid BackgroundColor="#4c9173"
                       Padding="10"
-                      ColumnDefinitions="*,*,*,*,80"
-                      MaximumWidthRequest="1000"
+                      ColumnDefinitions="0.7*,1*,2*,1*,*"
                       IsVisible="{Binding HeaderIsVisible}">
                     <Label Text="Όνομα"
                            Grid.Column="0"
-                           HorizontalOptions="Start" />
+                           HorizontalOptions="Center" />
                     <Label Text="Ημ. Λήξης"
                            Grid.Column="1"
                            HorizontalOptions="Center" />
@@ -125,7 +124,7 @@
                     <Label Text="Ημ Δημιουργίας"
                            Grid.Column="3"
                            HorizontalOptions="Center" />
-                    <Label Text=""
+                    <Label Text="Ενέργεια"
                            Grid.Column="4"
                            HorizontalOptions="Center" />
                 </Grid>
@@ -143,11 +142,10 @@
                     <Grid Padding="10"
                           ColumnSpacing="0"
                           RowSpacing="1"
-                          ColumnDefinitions="*,*,*,*,80"
-                          MaximumWidthRequest="1000">
+                          ColumnDefinitions="0.7*,1*,2*,1*,*">
                         <Label Text="{Binding FileName}"
                                Grid.Column="0"
-                               HorizontalOptions="Start" />
+                               HorizontalOptions="Center" />
                         <Label Text="{Binding ExpirationDate, StringFormat='{0:MM/dd/yyyy}'}"
                                Grid.Column="1"
                                HorizontalOptions="Center" />
@@ -157,10 +155,10 @@
                         <Label Text="{Binding CreationDate, StringFormat='{0:MM/dd/yyyy - hh:mm:ss}'}"
                                Grid.Column="3"
                                HorizontalOptions="Center" />
-                        <Button Text="DELETE"
+                        <Button Text="Διαγραφή"
                                 Grid.Column="4"
-                                HorizontalOptions="End"
-                                FontSize="13"
+                                HorizontalOptions="Center"
+                                FontSize="Body"
                                 BackgroundColor="IndianRed"
                                 TextColor="WhiteSmoke"
                                 Command="{Binding Source={x:Reference KeyGeneratorPage}, Path=BindingContext.DeleteKeysCommand}"

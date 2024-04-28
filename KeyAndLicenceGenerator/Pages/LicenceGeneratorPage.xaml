@@ -5,8 +5,7 @@
              Title="Γεννήτρια Αδειών"
              xmlns:vm="clr-namespace:KeyAndLicenceGenerator.ViewModels"
              xmlns:toolkit="http://schemas.microsoft.com/dotnet/2022/maui/toolkit"
-             ControlTemplate="{StaticResource PageTemplate}"
-             xmlns:controls="clr-namespace:KeyAndLicenceGenerator.ContentViews">
+             ControlTemplate="{StaticResource PageTemplate}">
 
     <ContentPage.BindingContext>
         <vm:LicenceGeneratorViewModel />
@@ -27,56 +26,84 @@
 
     <Grid RowDefinitions="Auto,*,Auto"
           RowSpacing="20"
-          Padding="0,0,0,10">
+          Padding="20,30,20,10"
+          MaximumWidthRequest="900">
         <VerticalStackLayout Grid.Row="0"
-                             Padding="5,60,20,0"
-                             Spacing="15"
-                             MaximumWidthRequest="1000">
+                             Spacing="15">
             <Label Text="Εισάγετε τα στοιχεία της Άδειας του Πελάτη"
                    FontAttributes="Bold"
                    HorizontalOptions="Center" />
 
-            <Entry x:Name="commonName"
-                   Text="{Binding CommonName, Mode=TwoWay}"
-                   Placeholder="Εταιρεία Πελάτη"
-                   HorizontalOptions="FillAndExpand"
-                   ToolTipProperties.Text="Εισάγετε την επωνυμία της εταιρείας του πελάτη">
-                <Entry.Behaviors>
-                    <toolkit:CharactersValidationBehavior InvalidStyle="{StaticResource InvalidEntryStyle}"
-                                                          ValidStyle="{StaticResource ValidEntryStyle}"
-                                                          Flags="ValidateOnValueChanged"
-                                                          MinimumCharacterTypeCount="3" />
-                </Entry.Behaviors>
-            </Entry>
+            <HorizontalStackLayout Margin="10"
+                                    Spacing="15"
+                                   HorizontalOptions="Center">
 
-            <Entry x:Name="email"
-                   Text="{Binding Email, Mode=TwoWay}"
-                   Placeholder="Email Πελάτη"
-                   HorizontalOptions="Fill"
-                   ToolTipProperties.Text="Εισάγετε το email της εταιρείας του πελάτη">
-                <Entry.Behaviors>
-                    <toolkit:EmailValidationBehavior InvalidStyle="{StaticResource InvalidEntryStyle}"
-                                                     ValidStyle="{StaticResource ValidEntryStyle}"
-                                                     Flags="ValidateOnValueChanged" />
-                </Entry.Behaviors>
-            </Entry>
+                <Picker x:Name="picker"
+                        MinimumWidthRequest="380">
+                    <Picker.ItemsSource>
+                        <x:Array Type="{x:Type x:String}">
+                            <x:String>Baboon</x:String>
+                            <x:String>Capuchin Monkey</x:String>
+                            <x:String>Blue Monkey</x:String>
+                            <x:String>Squirrel Monkey</x:String>
+                            <x:String>Golden Lion Tamarin</x:String>
+                            <x:String>Howler Monkey</x:String>
+                            <x:String>Japanese Macaque</x:String>
+                        </x:Array>
+                    </Picker.ItemsSource>
 
-            <Entry x:Name="country"
-                   Text="{Binding Country, Mode=TwoWay}"
-                   Placeholder="Χώρα (C)"
-                   HorizontalOptions="Fill"
-                   ToolTipProperties.Text="Εισάγετε την χώρα που εδρείει η εταιρεία του πελάτη">
-                <Entry.Behaviors>
-                    <toolkit:CharactersValidationBehavior InvalidStyle="{StaticResource InvalidEntryStyle}"
-                                                          ValidStyle="{StaticResource ValidEntryStyle}"
-                                                          Flags="ValidateOnValueChanged"
-                                                          MinimumCharacterTypeCount="3" />
-                </Entry.Behaviors>
-            </Entry>
+                </Picker>
+                <SearchBar Placeholder="Αναζήτηση Κλειδιού"
+                           MinimumWidthRequest="200">
+                </SearchBar>
+            </HorizontalStackLayout>
+
+            <VerticalStackLayout Spacing="15"
+                        WidthRequest="600">
+                <Entry x:Name="commonName"
+                       Text="{Binding CommonName, Mode=TwoWay}"
+                       Placeholder="Εταιρεία Πελάτη"
+                       HorizontalOptions="FillAndExpand"
+                       ToolTipProperties.Text="Εισάγετε την επωνυμία της εταιρείας του πελάτη">
+                    <Entry.Behaviors>
+                        <toolkit:CharactersValidationBehavior InvalidStyle="{StaticResource InvalidEntryStyle}"
+                                                              ValidStyle="{StaticResource ValidEntryStyle}"
+                                                              Flags="ValidateOnValueChanged"
+                                                              MinimumCharacterTypeCount="3" />
+                    </Entry.Behaviors>
+                </Entry>
+
+                <Entry x:Name="email"
+                       Text="{Binding Email, Mode=TwoWay}"
+                       Placeholder="Email Πελάτη"
+                       HorizontalOptions="Fill"
+                       ToolTipProperties.Text="Εισάγετε το email της εταιρείας του πελάτη">
+                    <Entry.Behaviors>
+                        <toolkit:EmailValidationBehavior InvalidStyle="{StaticResource InvalidEntryStyle}"
+                                                         ValidStyle="{StaticResource ValidEntryStyle}"
+                                                         Flags="ValidateOnValueChanged" />
+                    </Entry.Behaviors>
+                </Entry>
+
+                <Entry x:Name="country"
+                       Text="{Binding Country, Mode=TwoWay}"
+                       Placeholder="Χώρα (C)"
+                       HorizontalOptions="Fill"
+                       ToolTipProperties.Text="Εισάγετε την χώρα που εδρείει η εταιρεία του πελάτη">
+                    <Entry.Behaviors>
+                        <toolkit:CharactersValidationBehavior InvalidStyle="{StaticResource InvalidEntryStyle}"
+                                                              ValidStyle="{StaticResource ValidEntryStyle}"
+                                                              Flags="ValidateOnValueChanged"
+                                                              MinimumCharacterTypeCount="3" />
+                    </Entry.Behaviors>
+                </Entry>
+            </VerticalStackLayout>
+
             <HorizontalStackLayout Padding="10"
                                    Spacing="30"
                                    Margin="10"
                                    HorizontalOptions="Center">
+
                 <Label Text="Ημερομηνία Λήξης:"
                        HorizontalOptions="Start"
                        VerticalTextAlignment="Center" />
@@ -94,9 +121,6 @@
                                                               Flags="ValidateOnValueChanged" />
                     </DatePicker.Behaviors>
                 </DatePicker>
-                <controls:SearchPicker HorizontalOptions="Fill"
-                                       WidthRequest="300"
-                                       />
             </HorizontalStackLayout>
             <HorizontalStackLayout Padding="5"
                                    Spacing="5"
@@ -140,6 +164,7 @@
                     Text="Generate Keys"
                     HorizontalOptions="Fill"
                     IsEnabled="{Binding IsFormValid}"
+                    MaximumWidthRequest="600"
                     ToolTipProperties.Text="Δημιουργία Άδειας Πελάτη. Θα σας ζητηθεί να αποθηκεύσετε αντίγραφο στον υπολογιστή σας ενώ η αποθήκευση στο USB γίνει αυτόματα" />
             <Border Stroke="WhiteSmoke"
                     StrokeThickness="1"
@@ -148,12 +173,11 @@
                     Padding="0">
                 <Grid BackgroundColor="#c46352"
                       Padding="10"
-                      ColumnDefinitions="*,*,*,*,80"
-                      MaximumWidthRequest="1000"
+                      ColumnDefinitions="0.7*,1*,2*,1*,*"
                       IsVisible="{Binding HeaderIsVisible}">
                     <Label Text="Όνομα"
                            Grid.Column="0"
-                           HorizontalOptions="Start" />
+                           HorizontalOptions="Center" />
                     <Label Text="Ημ. Λήξης"
                            Grid.Column="1"
                            HorizontalOptions="Center" />
@@ -180,11 +204,10 @@
                     <Grid Padding="10"
                           ColumnSpacing="0"
                           RowSpacing="1"
-                          ColumnDefinitions="*,*,*,*,80"
-                          MaximumWidthRequest="1000">
+                          ColumnDefinitions="0.7*,1*,2*,1*,*">
                         <Label Text="{Binding FileName}"
                                Grid.Column="0"
-                               HorizontalOptions="Start" />
+                               HorizontalOptions="Center" />
                         <Label Text="{Binding ExpirationDate, StringFormat='{0:MM/dd/yyyy}'}"
                                Grid.Column="1"
                                HorizontalOptions="Center" />
@@ -194,9 +217,9 @@
                         <Label Text="{Binding CreationDate, StringFormat='{0:MM/dd/yyyy - hh:mm:ss}'}"
                                Grid.Column="3"
                                HorizontalOptions="Center" />
-                        <Button Text="DELETE"
+                        <Button Text="Διαγραφή"
                                 Grid.Column="4"
-                                HorizontalOptions="End"
+                                HorizontalOptions="Center"
                                 FontSize="13"
                                 BackgroundColor="IndianRed"
                                 TextColor="WhiteSmoke"

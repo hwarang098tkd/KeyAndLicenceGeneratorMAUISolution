@@ -93,9 +93,6 @@
 	</ItemGroup>
 
 	<ItemGroup>
-	  <MauiXaml Update="ContentViews\SearchPicker.xaml">
-	    <Generator>MSBuild:Compile</Generator>
-	  </MauiXaml>
 	  <MauiXaml Update="Pages\KeysGeneratorPage.xaml">
 	    <Generator>MSBuild:Compile</Generator>
 	  </MauiXaml>
@@ -114,12 +111,6 @@
 
 	<ItemGroup>
 	  <PRIResource Remove="UserControls\**" />
-	</ItemGroup>
-
-	<ItemGroup>
-	  <Compile Update="ContentViews\SearchPicker.xaml.cs">
-	    <DependentUpon>SearchPicker.xaml</DependentUpon>
-	  </Compile>
 	</ItemGroup>
 
 </Project>
