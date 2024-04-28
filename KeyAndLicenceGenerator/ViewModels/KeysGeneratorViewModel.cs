@@ -4,7 +4,6 @@ using KeyAndLicenceGenerator.Models;
 using KeyAndLicenceGenerator.Services;
 using System.Collections.ObjectModel;
 using System.Diagnostics;
-using System.Security.Cryptography.X509Certificates;
 
 namespace KeyAndLicenceGenerator.ViewModels
 {
@@ -17,7 +16,7 @@ namespace KeyAndLicenceGenerator.ViewModels
         private bool headerIsVisible;
 
         [ObservableProperty]
-        private ObservableCollection<KeyFileInfo> keyFiles;
+        private ObservableCollection<PfxFileInfo> keyFiles;
 
         [ObservableProperty]
         [NotifyPropertyChangedFor(nameof(IsFormValid))]
@@ -42,14 +41,17 @@ namespace KeyAndLicenceGenerator.ViewModels
 
         public KeysGeneratorViewModel()
         {
-            KeyFiles = new ObservableCollection<KeyFileInfo>();
+            KeyFiles = new ObservableCollection<PfxFileInfo>();
             LoadCollectionView();
         }
 
-        private async Task LoadCollectionView()
+        private void LoadCollectionView()
         {
-            keyFiles.Clear();
-            await LoadKeyFiles();
+            KeyFiles.Clear();
+            foreach (var pair in CertificateManager.CertificatePairs)
+            {
+                KeyFiles.Add(pair.PfxFile);
+            }
         }
 
         public bool ValidateFormChecker()
@@ -59,82 +61,82 @@ namespace KeyAndLicenceGenerator.ViewModels
             return result;
         }
 
-        private async Task LoadKeyFiles()
-        {
-            string appBasePath = AppDomain.CurrentDomain.BaseDirectory;
-            string keysFolderPath = Path.Combine(appBasePath, "Keys");
-            string pfxPassword = "vte3UW5YgHMgpgqIXe6mkP3wcI5gcKoF"; // The password used to export the pfx
-            int counter = 0;
-            var temporaryList = new List<KeyFileInfo>();
+        //private async Task LoadKeyFiles()
+        //{
+        //    string appBasePath = AppDomain.CurrentDomain.BaseDirectory;
+        //    string keysFolderPath = Path.Combine(appBasePath, "Keys");
+        //    string pfxPassword = "vte3UW5YgHMgpgqIXe6mkP3wcI5gcKoF"; // The password used to export the pfx
+        //    int counter = 0;
+        //    var temporaryList = new List<PfxFileInfo>();
 
-            foreach (string file in Directory.EnumerateFiles(keysFolderPath, "*.*", SearchOption.AllDirectories))
-            {
-                try
-                {
-                    X509Certificate2 cert;
-                    if (file.EndsWith(".pfx"))
-                    {
-                        cert = new X509Certificate2(file, pfxPassword); // Load the PFX with the password
-                        counter++;
-                    }
-                    /*else if (file.EndsWith(".cer"))
-                    {
-                        cert = new X509Certificate2(file); // Load the CER without a password
-                    }*/
-                    else
-                    {
-                        continue; // Skip non-certificate files
-                    }
+        //    foreach (string file in Directory.EnumerateFiles(keysFolderPath, "*.*", SearchOption.AllDirectories))
+        //    {
+        //        try
+        //        {
+        //            X509Certificate2 cert;
+        //            if (file.EndsWith(".pfx"))
+        //            {
+        //                cert = new X509Certificate2(file, pfxPassword); // Load the PFX with the password
+        //                counter++;
+        //            }
+        //            /*else if (file.EndsWith(".cer"))
+        //            {
+        //                cert = new X509Certificate2(file); // Load the CER without a password
+        //            }*/
+        //            else
+        //            {
+        //                continue; // Skip non-certificate files
+        //            }
 
-                    DateTime creationTime = File.GetCreationTime(file);
+        //            DateTime creationTime = File.GetCreationTime(file);
 
-                    temporaryList.Add(new KeyFileInfo
-                    {
-                        FileName = Path.GetFileName(file).Replace("_Key.pfx", ""),
-                        FilePath = file,
-                        ExpirationDate = cert.NotAfter,
-                        CommonName = cert.GetNameInfo(X509NameType.SimpleName, false),
-                        Email = cert.GetNameInfo(X509NameType.EmailName, false),
-                        KeyType = file.EndsWith(".pfx") ? "Private" : "Public",
-                        CreationDate = creationTime
-                    });
-                }
-                catch (Exception ex)
-                {
-                    Debug.WriteLine($"Failed to load certificate from {file}: {ex.Message}");
-                }
-            }
+        //            temporaryList.Add(new PfxFileInfo
+        //            {
+        //                FileName = Path.GetFileName(file).Replace("_Key.pfx", ""),
+        //                FilePath = file,
+        //                ExpirationDate = cert.NotAfter,
+        //                CommonName = cert.GetNameInfo(X509NameType.SimpleName, false),
+        //                Email = cert.GetNameInfo(X509NameType.EmailName, false),
+        //                KeyType = file.EndsWith(".pfx") ? "Private" : "Public",
+        //                CreationDate = creationTime
+        //            });
+        //        }
+        //        catch (Exception ex)
+        //        {
+        //            Debug.WriteLine($"Failed to load certificate from {file}: {ex.Message}");
+        //        }
+        //    }
 
-            // Sort the list by CreationDate descending
-            var sortedList = temporaryList.OrderByDescending(k => k.CreationDate).ToList();
+        //    // Sort the list by CreationDate descending
+        //    var sortedList = temporaryList.OrderByDescending(k => k.CreationDate).ToList();
 
-            // Clear and reload the observable collection
-            KeyFiles.Clear();
-            foreach (var fileInfo in sortedList)
-            {
-                KeyFiles.Add(fileInfo);
-            }
-            if (counter <= 0)
-            {
-                HeaderIsVisible = false;
-            }
-            else
-            {
-                HeaderIsVisible = true;
-            }
-            CountKeyslb = $"Βρέθηκαν {counter} κλειδιά";
-        }
+        //    // Clear and reload the observable collection
+        //    KeyFiles.Clear();
+        //    foreach (var fileInfo in sortedList)
+        //    {
+        //        KeyFiles.Add(fileInfo);
+        //    }
+        //    if (counter <= 0)
+        //    {
+        //        HeaderIsVisible = false;
+        //    }
+        //    else
+        //    {
+        //        HeaderIsVisible = true;
+        //    }
+        //    CountKeyslb = $"Βρέθηκαν {counter} κλειδιά";
+        //}
 
         [RelayCommand]
         public async Task GenerateKeys()
         {
             KeyGeneratorService.GenerateAndSaveCertificate(commonName.ToUpper(), email, country.ToUpper(), selectedDate);
             Debug.WriteLine("Form is valid, proceeding with action.");
-            await LoadCollectionView();
+            LoadCollectionView();
         }
 
         [RelayCommand]
-        private async Task DeleteKeysAsync(KeyFileInfo keyFile)
+        private async Task DeleteKeysAsync(PfxFileInfo keyFile)
         {
             Debug.WriteLine($"Deleting key: Pressed {keyFile.CreationDate}");
             // Prompt the user for confirmation before deletion
@@ -155,10 +157,10 @@ namespace KeyAndLicenceGenerator.ViewModels
                 Debug.WriteLine("Deletion cancelled for " + keyFile.FileName);
             }
 
-            await LoadCollectionView();
+            LoadCollectionView();
         }
 
-        private async Task DeleteKeysActionAsync(KeyFileInfo keyFile)
+        private async Task DeleteKeysActionAsync(PfxFileInfo keyFile)
         {
             string appBasePath = AppDomain.CurrentDomain.BaseDirectory;
             string keysDirectoryPath = Path.Combine(appBasePath, "Keys");

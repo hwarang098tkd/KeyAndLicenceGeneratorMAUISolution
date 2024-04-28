@@ -18,7 +18,7 @@
         public string CommonName { get; set; }
         public string Email { get; set; }
         public DateTime CreationDate { get; set; }
-        public string KeyType { get; set; } // Specific to PFX files
+        public string KeyType { get; set; }
     }
 
     public class LicenseFileInfo
@@ -29,6 +29,7 @@
         public string CustomerName { get; set; }
         public DateTime CreationDate { get; set; }
     }
+
     public class CertificatePairFileInfo
     {
         public CerFileInfo CerFile { get; set; }

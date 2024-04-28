@@ -19,7 +19,7 @@ namespace KeyAndLicenceGenerator.ViewModels
         private int pickerSelectedIndex;
 
         [ObservableProperty]
-        private ObservableCollection<KeyFileInfo> pickerItems;
+        private ObservableCollection<PfxFileInfo> pickerItems;
 
         public SearchPickerViewModel()
         {

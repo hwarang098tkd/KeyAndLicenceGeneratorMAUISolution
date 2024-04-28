@@ -1,4 +1,4 @@
-﻿using Microsoft.Toolkit.Uwp.Notifications;
+﻿using KeyAndLicenceGenerator.Services;
 
 namespace KeyAndLicenceGenerator;
 
@@ -7,22 +7,22 @@ public partial class App : Application
     public App()
     {
         InitializeComponent();
-        // Add this inside the constructor or initialization method of your App
-        ToastNotificationManagerCompat.OnActivated += notificationArgs =>
-        {
-            // Handle activation here
-            // You can parse notificationArgs to respond to user interactions
-        };
         MainPage = new AppShell();
+        CertificateManager.LoadCertificatePairs().Wait();
     }
 
     protected override Window CreateWindow(IActivationState activationState)
     {
         var window = base.CreateWindow(activationState);
+        SetupInitialWindowDimensions(window);
+        return window;
+    }
 
+    private void SetupInitialWindowDimensions(Window window)
+    {
+        // Default settings for production
         const int newWidth = 1000;
         const int newHeight = 800;
-
         const int minWidth = 600;
         const int minHeight = 780;
 
@@ -31,6 +31,17 @@ public partial class App : Application
         window.Width = newWidth;
         window.Height = newHeight;
 
-        return window;
+#if DEBUG
+        // Debug settings to test window behavior under different dimensions
+        ResizeWindow(window, 1200, 2000, 10, 10);
+#endif
+    }
+
+    public void ResizeWindow(Window window, int width, int height, int x, int y)
+    {
+        window.X = x;
+        window.Y = y;
+        window.Width = width;
+        window.Height = height;
     }
 }
