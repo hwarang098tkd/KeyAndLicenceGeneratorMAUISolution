@@ -1,6 +1,4 @@
-using KeyAndLicenceGenerator.Services;
 using KeyAndLicenceGenerator.ViewModels;
-using System.Diagnostics;
 
 namespace KeyAndLicenceGenerator.Pages;
 
@@ -12,13 +10,9 @@ public partial class LicenceGeneratorPage : ContentPage
         this.BindingContext = new LicenceGeneratorViewModel();
     }
 
-    private async void OnFormatClicked(object sender, EventArgs e)
+    private void OnSearchTextChanged(object sender, TextChangedEventArgs e)
     {
-        Debug.WriteLine("Format Button Clicked");
-    }
-
-    private async void LicenceClicked(object sender, EventArgs e)
-    {
-        Debug.WriteLine("Licence Button Clicked");
+        var vm = BindingContext as LicenceGeneratorViewModel;
+        vm?.FilterKeyFiles(e.NewTextValue);
     }
 }

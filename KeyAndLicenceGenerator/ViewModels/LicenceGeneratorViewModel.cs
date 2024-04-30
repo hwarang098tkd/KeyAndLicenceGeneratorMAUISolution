@@ -4,6 +4,8 @@ using KeyAndLicenceGenerator.Services;
 using System.Collections.ObjectModel;
 using System.Diagnostics;
 using UsbDeviceLibrary.Model;
+using KeyAndLicenceGenerator.Models;
+using System.Windows.Input;
 
 #if WINDOWS
 
@@ -59,10 +61,54 @@ namespace KeyAndLicenceGenerator.ViewModels
         [ObservableProperty]
         private bool usbDeviceIsEnabled;
 
+        [ObservableProperty]
+        private ObservableCollection<PfxFileInfo> keyFiles;
+
+        private ObservableCollection<PfxFileInfo> _allKeyFiles = new ObservableCollection<PfxFileInfo>();
+        public ICommand FilterKeyFilesCommand { get; }
+        /*
+                [ObservableProperty]
+                private PfxFileInfo selectedKeyFile;
+
+                private void OnSelectedKeyFileChanged(PfxFileInfo value)
+                {
+                    // Logic to execute when the selection changes
+                    Debug.WriteLine($"Selected file: {value?.FileName}");
+                }*/
+
         public LicenceGeneratorViewModel()
         {
             UsbDeviceNames = [];
             _ = LoadUsbDevicesAsync();
+            KeyFiles = new ObservableCollection<PfxFileInfo>();
+            LoadKeyPicker();
+            FilterKeyFilesCommand = new Command<string>(FilterKeyFiles);
+        }
+
+        public void FilterKeyFiles(string searchText)
+        {
+            if (string.IsNullOrWhiteSpace(searchText))
+            {
+                KeyFiles = new ObservableCollection<PfxFileInfo>(_allKeyFiles);
+            }
+            else
+            {
+                KeyFiles = new ObservableCollection<PfxFileInfo>(
+                    _allKeyFiles.Where(pfx => pfx.FileName.ToLower().StartsWith(searchText.ToLower())));
+            }
+        }
+
+        [RelayCommand]
+        private void LoadKeyPicker()
+        {
+            // Assuming CertificateManager.CertificatePairs is already populated
+            KeyFiles.Clear();
+            _allKeyFiles.Clear();
+            foreach (var pair in CertificateManager.CertificatePairs)
+            {
+                _allKeyFiles.Add(pair.PfxFile);
+            }
+            KeyFiles = new ObservableCollection<PfxFileInfo>(_allKeyFiles);
         }
 
         public bool ValidateFormChecker()

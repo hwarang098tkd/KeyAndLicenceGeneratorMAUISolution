@@ -35,31 +35,28 @@
                    HorizontalOptions="Center" />
 
             <HorizontalStackLayout Margin="10"
-                                    Spacing="15"
+                                   Spacing="15"
                                    HorizontalOptions="Center">
 
-                <Picker x:Name="picker"
-                        MinimumWidthRequest="380">
-                    <Picker.ItemsSource>
-                        <x:Array Type="{x:Type x:String}">
-                            <x:String>Baboon</x:String>
-                            <x:String>Capuchin Monkey</x:String>
-                            <x:String>Blue Monkey</x:String>
-                            <x:String>Squirrel Monkey</x:String>
-                            <x:String>Golden Lion Tamarin</x:String>
-                            <x:String>Howler Monkey</x:String>
-                            <x:String>Japanese Macaque</x:String>
-                        </x:Array>
-                    </Picker.ItemsSource>
-
+                <Picker x:Name="keyFilePicker"
+                        WidthRequest="325"
+                        ItemsSource="{Binding KeyFiles}"
+                        ItemDisplayBinding="{Binding FileName}"
+                        SelectedItem="{Binding SelectedKeyFile, Mode=TwoWay}">
                 </Picker>
-                <SearchBar Placeholder="Αναζήτηση Κλειδιού"
-                           MinimumWidthRequest="200">
-                </SearchBar>
+                <Button x:Name="KeysRefresh_btn"
+                        FontFamily="FASolid"
+                        Text="{StaticResource Key=arrows-rotate}"
+                        Command="{Binding LoadKeyPickerCommand}">
+                </Button>
+                <SearchBar x:Name="searchBar"
+                           Placeholder="Αναζήτηση Κλειδιού"
+                           MinimumWidthRequest="200"
+                           TextChanged="OnSearchTextChanged" />
             </HorizontalStackLayout>
 
             <VerticalStackLayout Spacing="15"
-                        WidthRequest="600">
+                                 WidthRequest="600">
                 <Entry x:Name="commonName"
                        Text="{Binding CommonName, Mode=TwoWay}"
                        Placeholder="Εταιρεία Πελάτη"
@@ -127,7 +124,7 @@
                                    HorizontalOptions="Center">
                 <Button x:Name="usbDeviceRefresh_btn"
                         FontFamily="FABrandsRegular"
-                        Text="{StaticResource Key=arrows-rotate}"
+                        Text="{StaticResource Key=usb}"
                         Command="{Binding LoadUsbDevicesCommand}">
                 </Button>
 
@@ -142,8 +139,7 @@
                 </Picker>
 
                 <!-- Button to trigger formatting based on selected option -->
-                <Button Clicked="OnFormatClicked"
-                        Text="FORMAT"
+                <Button Text="FORMAT"
                         Command="{Binding DeviceFormatCommand}"
                         HorizontalOptions="End"
                         ToolTipProperties.Text="ΠΡΟΣΟΧΗ: Θα διαγραφούν όλα τα δεδομένα" />
@@ -194,8 +190,7 @@
             </Border>
         </VerticalStackLayout>
         <!-- Data Items -->
-        <CollectionView ItemsSource="{Binding KeyFiles}"
-                        SelectionMode="Single"
+        <CollectionView SelectionMode="Single"
                         VerticalOptions="FillAndExpand"
                         Grid.Row="1"
                         MinimumHeightRequest="400">
