@@ -69,7 +69,8 @@ namespace KeyAndLicenceGenerator.ViewModels
 
         [ObservableProperty]
         private PfxFileInfo selectedKeyFile;
-        partial void OnSelectedKeyFileChanged(PfxFileInfo value)
+
+        private partial void OnSelectedKeyFileChanged(PfxFileInfo value)
         {
             // You can use 'value' directly or do something with 'selectedKeyFile'.
             Debug.WriteLine($"New selected file: {value.FileName}");
@@ -139,14 +140,16 @@ namespace KeyAndLicenceGenerator.ViewModels
                 string selectedDevice = UsbDeviceNames[UsbDeviceSelectedIndex];
                 string driveLetter = selectedDevice.Split('|')[0].Trim();
 
-                var licenceGeneratorService = new LicenceGeneratorService();
+                //var licenceGeneratorService = new LicenceGeneratorService();
 
-                bool licenceGenerated = await licenceGeneratorService.GenerateAndSaveLicense(
+                // Extract the file path from the selected PFX file
+                /*string pathToPfxFile = SelectedKeyFile.FilePath;
+                bool licenceGenerated = await licenceGeneratorService.GenerateAndSaveLicenseAsync(
                     CommonName,
                     Email,
                     SelectedDate,
                     GetUsbDevice(driveLetter),
-                    "path_to_pfx_file");
+                    pathToPfxFile);
 
                 if (licenceGenerated)
                 {
@@ -155,7 +158,7 @@ namespace KeyAndLicenceGenerator.ViewModels
                 else
                 {
                     Debug.WriteLine("Failed to generate and save license.");
-                }
+                }*/
             }
             catch (Exception ex)
             {

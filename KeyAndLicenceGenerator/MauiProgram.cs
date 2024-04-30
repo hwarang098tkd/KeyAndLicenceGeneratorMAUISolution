@@ -1,5 +1,5 @@
 ﻿using CommunityToolkit.Maui;
-using KeyAndLicenceGenerator.Interfaces;
+using CommunityToolkit.Maui.Storage;
 using Microsoft.Extensions.Logging;
 
 namespace KeyAndLicenceGenerator
@@ -20,7 +20,7 @@ namespace KeyAndLicenceGenerator
                     fonts.AddFont("Font Awesome 6 Free-Regular-400.otf", "FAFreeRegular");
                     fonts.AddFont("Font Awesome 6 Free-Solid-900.otf", "FASolid");
                 })
-                .Services.AddSingleton<IFileSavePicker, WindowsFileSavePicker>();
+                .Services.AddSingleton<IFileSaver>(FileSaver.Default);
 
 #if DEBUG
             builder.Logging.AddDebug();

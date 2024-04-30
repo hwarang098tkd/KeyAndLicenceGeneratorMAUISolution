@@ -1,4 +1,4 @@
-﻿using KeyAndLicenceGenerator.Interfaces;
+﻿using CommunityToolkit.Maui.Storage;
 using System.Diagnostics;
 using System.Security.Cryptography;
 using System.Security.Cryptography.X509Certificates;
@@ -9,9 +9,14 @@ namespace KeyAndLicenceGenerator.Services
 {
     public class LicenceGeneratorService
     {
-        private readonly IFileSavePicker _fileSavePicker;
+        private readonly IFileSaver fileSaver;
 
-        public async Task<bool> GenerateAndSaveLicense(string companyName, string email, DateTime expiryDate, UsbDriveInfo usbDriveInfo, string pfxPath)
+        public LicenceGeneratorService(IFileSaver fileSaver)
+        {
+            this.fileSaver = fileSaver;
+        }
+
+        public async Task<bool> GenerateAndSaveLicenseAsync(string companyName, string email, DateTime expiryDate, UsbDriveInfo usbDriveInfo, string pfxPath)
         {
             return await LicenceGeneratorAction(companyName, email, expiryDate, usbDriveInfo, pfxPath);
         }
@@ -59,7 +64,7 @@ namespace KeyAndLicenceGenerator.Services
             }
             catch (Exception ex)
             {
-                Debug.WriteLine(ex, "Error occurred while generating license key. ErrorCode(1)");
+                Debug.WriteLine(ex, "Error occurred while generating license key.");
                 return false;
             }
         }
@@ -89,16 +94,24 @@ namespace KeyAndLicenceGenerator.Services
         public async Task<bool> SaveLicenseKeyToFile(string companyName, string licenseKey)
         {
             string fileName = $"{companyName}.key";
-            string filePath = await _fileSavePicker.SaveFileAsync(fileName, licenseKey);
+            using var stream = new MemoryStream(Encoding.UTF8.GetBytes(licenseKey));
 
-            if (!string.IsNullOrEmpty(filePath))
+            // Use FileSaver to save the file
+            var cancellationToken = new CancellationToken();  // You might want to pass this as a parameter
+            var fileSaverResult = await fileSaver.SaveAsync(fileName, stream, cancellationToken);
+
+            if (fileSaverResult.IsSuccessful)
             {
-                Debug.WriteLine($"License key saved to file: {filePath}");
+                Debug.WriteLine($"License key saved to file: {fileSaverResult.FilePath}");
                 return true;
             }
             else
             {
-                Debug.WriteLine("Save operation canceled by user.");
+                if (fileSaverResult.Exception != null)
+                    Debug.WriteLine($"Failed to save license key: {fileSaverResult.Exception.Message}");
+                else
+                    Debug.WriteLine("Save operation canceled by user.");
+
                 return false;
             }
         }

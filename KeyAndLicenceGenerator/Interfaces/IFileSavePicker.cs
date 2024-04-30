@@ -1,6 +1,8 @@
-﻿namespace KeyAndLicenceGenerator.Interfaces;
-
-public interface IFileSavePicker
+﻿// In your Interfaces folder
+namespace KeyAndLicenceGenerator.Interfaces
 {
-    Task<string> SaveFileAsync(string filename, string content);
+    public interface IFileSavePicker
+    {
+        Task<string> SaveFileAsync(string filename, string content);
+    }
 }
