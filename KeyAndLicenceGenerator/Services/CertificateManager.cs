@@ -47,7 +47,6 @@ namespace KeyAndLicenceGenerator.Services
                                 CommonName = cert.GetNameInfo(X509NameType.SimpleName, false),
                                 Email = cert.GetNameInfo(X509NameType.EmailName, false),
                                 CreationDate = File.GetCreationTime(file),
-                                KeyType = "Private"
                             };
                         }
                         else if (file.EndsWith(".cer"))

@@ -138,12 +138,10 @@
                         Title="Επιλέξτε Συσκευή:">
                 </Picker>
 
-                <!-- Button to trigger formatting based on selected option -->
                 <Button Text="FORMAT"
                         Command="{Binding DeviceFormatCommand}"
                         HorizontalOptions="End"
                         ToolTipProperties.Text="ΠΡΟΣΟΧΗ: Θα διαγραφούν όλα τα δεδομένα" />
-                <!-- ProgressBar in your XAML -->
             </HorizontalStackLayout>
 
             <ProgressBar Progress="{Binding ProgressBarProgress}"
@@ -189,7 +187,7 @@
                 </Grid>
             </Border>
         </VerticalStackLayout>
-        <!-- Data Items -->
+
         <CollectionView SelectionMode="Single"
                         VerticalOptions="FillAndExpand"
                         Grid.Row="1"

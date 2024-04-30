@@ -18,7 +18,6 @@
         public string CommonName { get; set; }
         public string Email { get; set; }
         public DateTime CreationDate { get; set; }
-        public string KeyType { get; set; }
     }
 
     public class LicenseFileInfo

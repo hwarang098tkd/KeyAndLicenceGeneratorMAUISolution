@@ -66,15 +66,14 @@ namespace KeyAndLicenceGenerator.ViewModels
 
         private ObservableCollection<PfxFileInfo> _allKeyFiles = new ObservableCollection<PfxFileInfo>();
         public ICommand FilterKeyFilesCommand { get; }
-        /*
-                [ObservableProperty]
-                private PfxFileInfo selectedKeyFile;
 
-                private void OnSelectedKeyFileChanged(PfxFileInfo value)
-                {
-                    // Logic to execute when the selection changes
-                    Debug.WriteLine($"Selected file: {value?.FileName}");
-                }*/
+        [ObservableProperty]
+        private PfxFileInfo selectedKeyFile;
+        partial void OnSelectedKeyFileChanged(PfxFileInfo value)
+        {
+            // You can use 'value' directly or do something with 'selectedKeyFile'.
+            Debug.WriteLine($"New selected file: {value.FileName}");
+        }
 
         public LicenceGeneratorViewModel()
         {
