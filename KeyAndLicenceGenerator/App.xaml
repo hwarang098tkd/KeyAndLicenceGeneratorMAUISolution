@@ -22,7 +22,6 @@
                                FontAutoScalingEnabled="True"
                                FontSize="10" />
                     </StackLayout>
-                    
                 </Grid>
             </ControlTemplate>
         </ResourceDictionary>

@@ -6,6 +6,10 @@ using System.Diagnostics;
 using UsbDeviceLibrary.Model;
 using KeyAndLicenceGenerator.Models;
 using System.Windows.Input;
+using CommunityToolkit.Maui.Alerts;
+using CommunityToolkit.Maui.Storage;
+
+using System.Text;
 
 #if WINDOWS
 
@@ -62,27 +66,62 @@ namespace KeyAndLicenceGenerator.ViewModels
         private bool usbDeviceIsEnabled;
 
         [ObservableProperty]
+        private ObservableCollection<LicenseFileInfo> licenceFiles;
+
+        [ObservableProperty]
         private ObservableCollection<PfxFileInfo> keyFiles;
 
         private ObservableCollection<PfxFileInfo> _allKeyFiles = new ObservableCollection<PfxFileInfo>();
         public ICommand FilterKeyFilesCommand { get; }
 
         [ObservableProperty]
+        [NotifyPropertyChangedFor(nameof(IsFormValid))]
         private PfxFileInfo selectedKeyFile;
 
-        private partial void OnSelectedKeyFileChanged(PfxFileInfo value)
-        {
-            // You can use 'value' directly or do something with 'selectedKeyFile'.
-            Debug.WriteLine($"New selected file: {value.FileName}");
-        }
+        public ICommand SaveCommand { get; private set; }
 
+        // Constructor that accepts the LicenceGeneratorService
         public LicenceGeneratorViewModel()
         {
+            SaveCommand = new Command<LicenseFileInfo>(async (item) => await SaveFile(item));
+
             UsbDeviceNames = [];
             _ = LoadUsbDevicesAsync();
             KeyFiles = new ObservableCollection<PfxFileInfo>();
+            LicenceFiles = new ObservableCollection<LicenseFileInfo>();
             LoadKeyPicker();
             FilterKeyFilesCommand = new Command<string>(FilterKeyFiles);
+                        LoadCollectionView();
+        }
+
+        private void LoadCollectionView()
+        {
+            LicenceFiles.Clear();
+            foreach (var licenceFile in CertificateManager.CertificateLicences)
+            {
+                LicenceFiles.Add(licenceFile);
+            }
+        }
+
+        private async Task RefreshCollectionView()
+        {
+            CertificateManager.LoadCertificateLicences().Wait();
+            LoadCollectionView();
+        }
+
+        private async Task SaveFile(LicenseFileInfo item)
+        {
+            var cancellationToken = new CancellationToken(); // Consider a way to obtain or pass a CancellationToken if needed
+            using var stream = new MemoryStream(Encoding.Default.GetBytes("Data related to " + item.FilePath));
+            var fileSaverResult = await FileSaver.Default.SaveAsync(item.FileName, stream, cancellationToken);
+            if (fileSaverResult.IsSuccessful)
+            {
+                await Toast.Make($"The file '{item.FileName}' was saved successfully to location: {fileSaverResult.FilePath}").Show();
+            }
+            else
+            {
+                await Toast.Make($"The file was not saved successfully with error: {fileSaverResult.Exception?.Message}").Show();
+            }
         }
 
         public void FilterKeyFiles(string searchText)
@@ -114,7 +153,9 @@ namespace KeyAndLicenceGenerator.ViewModels
         public bool ValidateFormChecker()
         {
             var validationService = new ValidationFormService();
-            var result = validationService.ValidateForm(Email, CommonName, Country, SelectedDate);
+            bool result = validationService.ValidateForm(Email, CommonName, Country, SelectedDate);
+            // Ensure SelectedKeyFile and its FilePath are not null
+            result = result && SelectedKeyFile?.FilePath != null;
             return result;
         }
 
@@ -125,26 +166,11 @@ namespace KeyAndLicenceGenerator.ViewModels
         {
             try
             {
-                if (string.IsNullOrWhiteSpace(CommonName) || string.IsNullOrWhiteSpace(Email))
-                {
-                    Debug.WriteLine("Company name and email are required.");
-                    return;
-                }
-
-                if (UsbDeviceSelectedIndex < 0 || UsbDeviceSelectedIndex >= UsbDeviceNames.Count)
-                {
-                    Debug.WriteLine("No USB device selected or invalid selection.");
-                    return;
-                }
-
                 string selectedDevice = UsbDeviceNames[UsbDeviceSelectedIndex];
                 string driveLetter = selectedDevice.Split('|')[0].Trim();
+                string pathToPfxFile = SelectedKeyFile.FilePath;
 
-                //var licenceGeneratorService = new LicenceGeneratorService();
-
-                // Extract the file path from the selected PFX file
-                /*string pathToPfxFile = SelectedKeyFile.FilePath;
-                bool licenceGenerated = await licenceGeneratorService.GenerateAndSaveLicenseAsync(
+                bool licenceGenerated = await LicenceGeneratorService.GenerateAndSaveLicenseAsync(
                     CommonName,
                     Email,
                     SelectedDate,
@@ -154,15 +180,18 @@ namespace KeyAndLicenceGenerator.ViewModels
                 if (licenceGenerated)
                 {
                     Debug.WriteLine("License generated and saved successfully.");
+                    RefreshCollectionView();
                 }
                 else
                 {
                     Debug.WriteLine("Failed to generate and save license.");
-                }*/
+                    // Inform the user of failure, update UI
+                }
             }
             catch (Exception ex)
             {
                 Debug.WriteLine(ex, "Error occurred while generating and saving license.");
+                // Handle exceptions, possibly notify user
             }
         }
 

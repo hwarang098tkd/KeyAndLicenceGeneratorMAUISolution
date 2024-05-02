@@ -10,7 +10,6 @@ namespace KeyAndLicenceGenerator.Services
         {
             try
             {
-                // Update the distinguished name to include the datetime
                 var distinguishedName = new X500DistinguishedName($"CN={commonName}, E={email}, C={country}");
 
                 using (var rsa = RSA.Create(2048)) // Adjust key size as needed
