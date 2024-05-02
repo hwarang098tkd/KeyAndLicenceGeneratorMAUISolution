@@ -75,8 +75,10 @@ namespace KeyAndLicenceGenerator.ViewModels
         [NotifyPropertyChangedFor(nameof(IsFormValid))]
         private DateTime selectedDate = DateTime.Today.Date.AddYears(1);
 
-        public static DateTime MinDate => DateTime.Today.AddDays(1);
-        public static DateTime MaxDate => DateTime.Today.AddYears(50);
+        [ObservableProperty]
+        public DateTime minDate = DateTime.Today.AddDays(1);
+        [ObservableProperty]
+        public DateTime maxDate = DateTime.Today.AddYears(50);
         public ICommand SaveCommand { get; private set; }
 
         public LicenceGeneratorViewModel()
@@ -94,6 +96,8 @@ namespace KeyAndLicenceGenerator.ViewModels
 
         partial void OnSelectedKeyFileChanged(PfxFileInfo value)
         {
+            MaxDate = value.ExpirationDate;
+            SelectedDate = value.ExpirationDate;
             Debug.WriteLine(value?.FileName);
         }
 
@@ -317,6 +321,58 @@ namespace KeyAndLicenceGenerator.ViewModels
             }
         }
 
+        [RelayCommand]
+        private async Task DeleteLicenceAsync(LicenseFileInfo licenceFile)
+        {
+            Debug.WriteLine($"Deleting Licence: Pressed {licenceFile.CreationDate}");
+            // Prompt the user for confirmation before deletion
+            bool forDeleteAnswer = await App.Current.MainPage.DisplayAlert(
+                "ΠΡΟΣΟΧΗ",
+                $"Θέλετε να διαγράψετε την άδεια {licenceFile.CustomerName} ;",
+                "NAI",
+                "ΑΚΥΡΩΣΗ");
+
+            // Proceed with deletion if the user confirms
+            if (forDeleteAnswer)
+            {
+                await DeleteLicenceActionAsync(licenceFile);  // Call the deletion method
+                Debug.WriteLine("Deletion completed for " + licenceFile.FileName);
+            }
+            else
+            {
+                Debug.WriteLine("Deletion cancelled for " + licenceFile.FileName);
+            }
+
+            RefreshCollectionView();
+        }
+
+        private async Task DeleteLicenceActionAsync(LicenseFileInfo licenceFile)
+        {
+            string appBasePath = AppDomain.CurrentDomain.BaseDirectory;
+            string licenceDirectoryPath = Path.Combine(appBasePath, "Keys");
+            string targetFolderName = licenceFile.CreationDate.ToString("yyyy_M_d_HH'h'_mm'm'_ss's'");
+            string targetFolderPath = Path.Combine(licenceDirectoryPath, targetFolderName);
+            if (Directory.Exists(targetFolderPath))
+            {
+                try
+                {
+                    Directory.Delete(targetFolderPath, true);
+                    Debug.WriteLine($"Successfully deleted folder: {targetFolderPath}");
+                }
+                catch (Exception ex)
+                {
+                    Debug.WriteLine($"Error deleting folder {targetFolderPath}: {ex.Message}");
+                }
+            }
+            else
+            {
+                await App.Current.MainPage.DisplayAlert(
+                "ΠΡΟΣΟΧΗ",
+                $"Δεν βρέθηκε η άδεια {licenceFile.CustomerName} !!!",
+                "OK");
+                Debug.WriteLine($"No folder found matching the date {targetFolderName}");
+            }
+        }
 #else
         public void LoadUsbDevices()
         {

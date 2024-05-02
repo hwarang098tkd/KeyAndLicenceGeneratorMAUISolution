@@ -3,10 +3,15 @@
              xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
              x:Class="KeyAndLicenceGenerator.Pages.LicenceGeneratorPage"
              Title="Γεννήτρια Αδειών"
+             x:Name="LicencesGeneratorPage"
              xmlns:vm="clr-namespace:KeyAndLicenceGenerator.ViewModels"
              xmlns:toolkit="http://schemas.microsoft.com/dotnet/2022/maui/toolkit"
              ControlTemplate="{StaticResource PageTemplate}">
-
+    
+    <ContentPage.BindingContext>
+        <vm:LicenceGeneratorViewModel />
+    </ContentPage.BindingContext>
+    
     <ContentPage.Resources>
         <Style x:Key="InvalidEntryStyle"
                TargetType="Entry">
@@ -163,7 +168,7 @@
                     Padding="0">
                 <Grid BackgroundColor="#c46352"
                       Padding="10"
-                      ColumnDefinitions="0.7*,1*,1*,1*,*"
+                      ColumnDefinitions="0.5*,1*,1*,1*,*"
                       IsVisible="{Binding HeaderIsVisible}">
                     <Label Text="Όνομα"
                            Grid.Column="0"
@@ -194,37 +199,39 @@
                     <Grid Padding="10"
                           ColumnSpacing="0"
                           RowSpacing="1"
-                          ColumnDefinitions="0.7*,1*,1*,1*"
-                          RowDefinitions="Auto,*"
-                                          Background="WhiteSmoke">
+                          ColumnDefinitions="*,*,*,*"
+                          RowDefinitions="Auto,*">
                         <!-- First row for the certificate pair information -->
-                        <Label Text="{Binding CertificatePair.CerFile.FileName}"
+                        <Label Text="{Binding CertificatePair.CerFile.CommonName}"
                                Grid.Row="0"
                                Grid.Column="0"
-                               HorizontalOptions="Center"
-                               VerticalOptions="Center" />
-                        <Label Text="{Binding CertificatePair.PfxFile.FileName}"
+                               HorizontalOptions="Start"
+                               VerticalOptions="Center"
+                               FontAttributes="Bold" />
+                        <Label Text="{Binding CertificatePair.CerFile.ExpirationDate, StringFormat='{0:MM/dd/yyyy}'}"
                                Grid.Column="1"
                                Grid.Row="0"
-                               HorizontalOptions="Center"
-                               VerticalOptions="Center" />
-                        <Label Text="{Binding CertificatePair.CerFile.ExpirationDate, StringFormat='{0:MM/dd/yyyy}'}"
+                               HorizontalOptions="Start"
+                               VerticalOptions="Center"
+                               FontAttributes="Bold" />
+                        <Label Text="{Binding CertificatePair.CerFile.Email}"
                                Grid.Column="2"
                                Grid.Row="0"
-                               HorizontalOptions="Center"
-                               VerticalOptions="Center" />
-                        <Label Text="{Binding CertificatePair.PfxFile.ExpirationDate, StringFormat='{0:MM/dd/yyyy}'}"
+                               HorizontalOptions="Start"
+                               VerticalOptions="Center"
+                               FontAttributes="Bold" />
+                        <Label Text="{Binding CertificatePair.CerFile.CreationDate, StringFormat='{0:MM/dd/yyyy - hh:mm:ss}}'}"
                                Grid.Column="3"
                                Grid.Row="0"
-                               HorizontalOptions="Center"
-                               VerticalOptions="Center" />
+                               HorizontalOptions="Start"
+                               VerticalOptions="Center"
+                               FontAttributes="Bold" />
 
                         <!-- Second row for licenses that spans all columns -->
                         <CollectionView ItemsSource="{Binding LicenseKeys}"
                                         Grid.Row="1"
                                         Grid.ColumnSpan="4"
-                                        Background="White"
-                                        >
+                                        Background="White">
                             <!-- This makes the inner CollectionView span all columns -->
                             <CollectionView.ItemTemplate>
                                 <DataTemplate>
@@ -249,15 +256,16 @@
                                                     FontSize="Caption"
                                                     BackgroundColor="DarkBlue"
                                                     TextColor="WhiteSmoke"
-                                                    Command="{Binding Source={x:Reference PageName}, Path=BindingContext.SaveCommand}"
+                                                    Command="{Binding Source={x:Reference LicencesGeneratorPage}, Path=BindingContext.SaveCommand}"
                                                     CommandParameter="{Binding .}" />
                                             <Button Text="Διαγραφή"
                                                     FontSize="Caption"
                                                     BackgroundColor="IndianRed"
                                                     TextColor="WhiteSmoke"
-                                                    Command="{Binding Source={x:Reference KeyGeneratorPage}, Path=BindingContext.DeleteKeysCommand}"
+                                                    Command="{Binding Source={x:Reference LicencesGeneratorPage}, Path=BindingContext.DeleteLicenceCommand}"
                                                     CommandParameter="{Binding}" />
                                         </HorizontalStackLayout>
+
                                     </Grid>
                                 </DataTemplate>
                             </CollectionView.ItemTemplate>

@@ -97,7 +97,6 @@ namespace KeyAndLicenceGenerator.Services
                 bool isSignatureValid = publicKey.VerifyData(data, signature, HashAlgorithmName.SHA256, RSASignaturePadding.Pkcs1);
                 if (!isSignatureValid)
                 {
-                    Debug.WriteLine("Signature verification failed.");
                     return null;
                 }
 
