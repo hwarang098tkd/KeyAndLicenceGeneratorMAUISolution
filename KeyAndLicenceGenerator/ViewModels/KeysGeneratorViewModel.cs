@@ -48,6 +48,14 @@ namespace KeyAndLicenceGenerator.ViewModels
         private void LoadCollectionView()
         {
             KeyFiles.Clear();
+            if (CertificateManager.CertificatePairs.Count > 0)
+            {
+                HeaderIsVisible = true;
+            }
+            else
+            {
+                HeaderIsVisible = false;
+            }
             foreach (var pair in CertificateManager.CertificatePairs)
             {
                 KeyFiles.Add(pair.PfxFile);

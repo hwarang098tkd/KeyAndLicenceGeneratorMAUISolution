@@ -33,7 +33,7 @@ public partial class App : Application
 
 #if DEBUG
         // Debug settings to test window behavior under different dimensions
-        ResizeWindow(window, 1200, 2000, 10, 10);
+        ResizeWindow(window, 1200, 1200, 10, 10);
 #endif
     }
 

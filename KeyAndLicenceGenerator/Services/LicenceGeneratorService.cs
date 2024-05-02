@@ -36,8 +36,10 @@ namespace KeyAndLicenceGenerator.Services
                 DateTime certificateExpiry = certificate.NotAfter;
                 if (selectedExpiryDate > certificateExpiry)
                 {
+                    Debug.WriteLine($"Selected expiry date {selectedExpiryDate:yyyy-MM-dd} is later than the certificate's expiry date {certificateExpiry:yyyy-MM-dd}. License cannot be generated.");
                     return false;
                 }
+
 
                 string licenseInfo = $"Company Name: {companyName}|Email: {email}|Exp. Date: {selectedExpiryDate:yyyy-MM-dd}|SerialNumber: {usbDeviceSerinaNumber}";
                 Debug.WriteLine($"License information: {licenseInfo}");

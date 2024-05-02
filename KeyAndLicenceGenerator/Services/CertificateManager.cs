@@ -1,5 +1,6 @@
 ﻿using KeyAndLicenceGenerator.Models;
 using System.Diagnostics;
+using System.Security.Cryptography;
 using System.Security.Cryptography.X509Certificates;
 using System.Text;
 
@@ -8,101 +9,143 @@ namespace KeyAndLicenceGenerator.Services
     public static class CertificateManager
     {
         public static List<CertificatePairFileInfo> CertificatePairs { get; private set; } = new List<CertificatePairFileInfo>();
-
         public static List<LicenseFileInfo> CertificateLicences { get; private set; } = new List<LicenseFileInfo>();
+        public static List<CertificatePairModel> CertificateModel { get; private set; } = new List<CertificatePairModel>();
         public static string KeysFolderPath { get; private set; } = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "Keys");
         public static string LicencesFolderPath { get; private set; } = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "Licences");
         public static string PfxPassword { get; private set; } = "vte3UW5YgHMgpgqIXe6mkP3wcI5gcKoF";
 
-        public static async Task<List<LicenseFileInfo>> LoadLicenseKeys()
+        public static async Task LoadCertificateLicences()
         {
             string licenseKeyDirectoryPath = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "Licences");
-            List<LicenseFileInfo> loadedLicenses = new List<LicenseFileInfo>();
 
             try
             {
                 if (!Directory.Exists(licenseKeyDirectoryPath))
                 {
                     Debug.WriteLine("License key directory does not exist.");
-                    return loadedLicenses; // Return an empty list if the directory doesn't exist
+                    return;
                 }
 
-                foreach (string file in Directory.EnumerateFiles(licenseKeyDirectoryPath, "*.key", SearchOption.AllDirectories))
+                // Clear the existing certificate models
+                CertificateModel.Clear();
+
+                foreach (var pair in CertificatePairs)
                 {
-                    try
+                    if (pair.CerFile == null || pair.PfxFile == null)
                     {
-                        string encodedLicenseKey = await File.ReadAllTextAsync(file);
-                        // Decode or process the license key if necessary
-                        var LicenseFileInfo = DecodeLicenseKey(encodedLicenseKey);
-                        if (LicenseFileInfo != null)
+                        continue; // Skip if either .cer or .pfx file is missing
+                    }
+
+                    // Create a CertificatePairModel object for the pair
+                    CertificatePairModel pairModel = new CertificatePairModel
+                    {
+                        CertificatePair = pair,
+                        LicenseKeys = new List<LicenseFileInfo>()
+                    };
+
+                    foreach (string keyFilePath in Directory.EnumerateFiles(licenseKeyDirectoryPath, "*.key", SearchOption.AllDirectories))
+                    {
+                        try
                         {
-                            loadedLicenses.Add(LicenseFileInfo);
+                            // Verify and extract the key file with the associated certificate
+                            LicenseFileInfo licenseFileInfo = VerifyAndExtractKeyFile(keyFilePath, pair.CerFile.FilePath);
+                            if (licenseFileInfo != null)
+                            {
+                                // Add the license to the pair's LicenseKeys list
+                                pairModel.LicenseKeys.Add(licenseFileInfo);
+                            }
+                        }
+                        catch (Exception ex)
+                        {
+                            Debug.WriteLine($"Failed to verify key file {keyFilePath} with certificate {pair.CerFile.FilePath}: {ex.Message}");
                         }
                     }
-                    catch (Exception readEx)
-                    {
-                        Debug.WriteLine($"Failed to read or process license key file {file}: {readEx.Message}");
-                    }
+
+                    // Add the pair model to the CertificateModel list
+                    CertificateModel.Add(pairModel);
                 }
             }
             catch (Exception ex)
             {
-                Debug.WriteLine($"An error occurred while loading license keys: {ex.Message}");
+                Debug.WriteLine($"An error occurred while loading certificate licenses: {ex.Message}");
             }
-
-            return loadedLicenses;
         }
 
-        private static LicenseFileInfo DecodeLicenseKey(string encodedKey)
+        public static LicenseFileInfo VerifyAndExtractKeyFile(string keyFilePath, string cerFilePath)
         {
             try
             {
-                // Decode the base64 string to get the raw license info text
-                byte[] keyBytes = Convert.FromBase64String(encodedKey);
-                string keyText = Encoding.UTF8.GetString(keyBytes);
+                // Load the public key
+                X509Certificate2 cert = new X509Certificate2(cerFilePath);
+                RSA publicKey = cert.GetRSAPublicKey();
 
-                // Split the keyText into components
-                var parts = keyText.Split('|');
-                if (parts.Length < 4) // Make sure all parts are present
+                // Read and split the key file content
+                string encodedKey = File.ReadAllText(keyFilePath);
+                string[] parts = encodedKey.Split('.');
+                if (parts.Length != 2)
                 {
-                    Debug.WriteLine("Decoded license key format is incorrect or incomplete.");
+                    Debug.WriteLine("The format of the key file is incorrect.");
                     return null;
                 }
 
-                // Extract individual parts based on the known structure
-                string companyName = ExtractValueFromPart(parts[0]);
-                string email = ExtractValueFromPart(parts[1]);
-                DateTime expDate = DateTime.Parse(ExtractValueFromPart(parts[2]));
-                string serialNumber = ExtractValueFromPart(parts[3]);
+                // Decode the data and the signature
+                byte[] data = Convert.FromBase64String(parts[0]);
+                byte[] signature = Convert.FromBase64String(parts[1]);
 
-                // Create the LicenseFileInfo object
-                var info = new LicenseFileInfo
+                // Verify the signature
+                bool isSignatureValid = publicKey.VerifyData(data, signature, HashAlgorithmName.SHA256, RSASignaturePadding.Pkcs1);
+                if (!isSignatureValid)
                 {
-                    CustomerName = companyName,
-                    CustomerEmail = email,
-                    ExpirationDate = expDate,
-                    SerialNumber = serialNumber,
-                    LicenseText = keyText  // Optionally store the entire decoded text
-                };
+                    Debug.WriteLine("Signature verification failed.");
+                    return null;
+                }
 
-                return info;
+                // Process the data if needed
+                string decodedData = Encoding.UTF8.GetString(data);
+                return ParseLicenseInfo(decodedData, keyFilePath);
             }
             catch (Exception ex)
             {
-                Debug.WriteLine($"Error decoding license key: {ex.Message}");
+                Debug.WriteLine($"An error occurred: {ex.Message}");
+                return null;
+            }
+        }
+
+        private static LicenseFileInfo ParseLicenseInfo(string decodedData, string keyFilePath)
+        {
+            var parts = decodedData.Split('|');
+            if (parts.Length < 4)
+            {
+                Debug.WriteLine("Decoded license data format is incorrect or incomplete.");
+                return null;
+            }
+
+            try
+            {
+                return new LicenseFileInfo
+                {
+                    CustomerName = ExtractValueFromPart(parts[0]),
+                    CustomerEmail = ExtractValueFromPart(parts[1]),
+                    ExpirationDate = DateTime.Parse(ExtractValueFromPart(parts[2])),
+                    UsbSerialNumberBound = ExtractValueFromPart(parts[3]),
+                    FileName = Path.GetFileName(keyFilePath),
+                    CreationDate = File.GetCreationTime(keyFilePath),
+                };
+            }
+            catch (Exception ex)
+            {
+                Debug.WriteLine($"Error parsing license data: {ex.Message}");
                 return null;
             }
         }
 
         private static string ExtractValueFromPart(string part)
         {
-            var keyValue = part.Split(':');
-            if (keyValue.Length == 2)
-            {
-                return keyValue[1].Trim();
-            }
-            return string.Empty;  // Return empty if format is not as expected
+            int index = part.IndexOf(':');
+            return index != -1 ? part.Substring(index + 1).Trim() : string.Empty;
         }
+
 
         public static async Task LoadCertificatePairs()
         {

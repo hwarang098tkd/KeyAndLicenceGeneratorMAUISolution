@@ -163,7 +163,7 @@
                     Padding="0">
                 <Grid BackgroundColor="#c46352"
                       Padding="10"
-                      ColumnDefinitions="0.7*,1*,2*,1*,*"
+                      ColumnDefinitions="0.7*,1*,1*,1*,*"
                       IsVisible="{Binding HeaderIsVisible}">
                     <Label Text="Όνομα"
                            Grid.Column="0"
@@ -194,40 +194,79 @@
                     <Grid Padding="10"
                           ColumnSpacing="0"
                           RowSpacing="1"
-                          ColumnDefinitions="0.7*,1*,2*,1*,*">
-                        <Label Text="{Binding FileName}"
+                          ColumnDefinitions="0.7*,1*,1*,1*"
+                          RowDefinitions="Auto,*"
+                                          Background="WhiteSmoke">
+                        <!-- First row for the certificate pair information -->
+                        <Label Text="{Binding CertificatePair.CerFile.FileName}"
+                               Grid.Row="0"
                                Grid.Column="0"
-                               HorizontalOptions="Center" />
-                        <Label Text="{Binding ExpirationDate, StringFormat='{0:MM/dd/yyyy}'}"
+                               HorizontalOptions="Center"
+                               VerticalOptions="Center" />
+                        <Label Text="{Binding CertificatePair.PfxFile.FileName}"
                                Grid.Column="1"
-                               HorizontalOptions="Center" />
-                        <Label Text="{Binding Email}"
+                               Grid.Row="0"
+                               HorizontalOptions="Center"
+                               VerticalOptions="Center" />
+                        <Label Text="{Binding CertificatePair.CerFile.ExpirationDate, StringFormat='{0:MM/dd/yyyy}'}"
                                Grid.Column="2"
-                               HorizontalOptions="Center" />
-                        <Label Text="{Binding CreationDate, StringFormat='{0:MM/dd/yyyy - hh:mm:ss}'}"
+                               Grid.Row="0"
+                               HorizontalOptions="Center"
+                               VerticalOptions="Center" />
+                        <Label Text="{Binding CertificatePair.PfxFile.ExpirationDate, StringFormat='{0:MM/dd/yyyy}'}"
                                Grid.Column="3"
-                               HorizontalOptions="Center" />
-                        <HorizontalStackLayout Grid.Column="4">
-                            <Button x:Name="LicenceSaveBtn"
-                                    Text="Save"
-                                    HorizontalOptions="Center"
-                                    FontSize="Body"
-                                    BackgroundColor="IndianRed"
-                                    TextColor="WhiteSmoke"
-                                    Command="{Binding Source={x:Reference PageName}, Path=BindingContext.SaveCommand}"
-                                    CommandParameter="{Binding .}" />
-                            <Button Text="Διαγραφή"
-                                    HorizontalOptions="Center"
-                                    FontSize="Body"
-                                    BackgroundColor="IndianRed"
-                                    TextColor="WhiteSmoke"
-                                    Command="{Binding Source={x:Reference KeyGeneratorPage}, Path=BindingContext.DeleteKeysCommand}"
-                                    CommandParameter="{Binding}" />
-                        </HorizontalStackLayout>
+                               Grid.Row="0"
+                               HorizontalOptions="Center"
+                               VerticalOptions="Center" />
+
+                        <!-- Second row for licenses that spans all columns -->
+                        <CollectionView ItemsSource="{Binding LicenseKeys}"
+                                        Grid.Row="1"
+                                        Grid.ColumnSpan="4"
+                                        Background="White"
+                                        >
+                            <!-- This makes the inner CollectionView span all columns -->
+                            <CollectionView.ItemTemplate>
+                                <DataTemplate>
+                                    <Grid Padding="20,10,10,10"
+                                          ColumnSpacing="0"
+                                          RowSpacing="1"
+                                          ColumnDefinitions="0.7*,1*,1*,1*,*">
+                                        <Label Text="{Binding CustomerName}"
+                                               Grid.Column="0" />
+                                        <Label Text="{Binding ExpirationDate, StringFormat='{0:MM/dd/yyyy}'}"
+                                               Grid.Column="1" />
+                                        <Label Text="{Binding CustomerEmail}"
+                                               Grid.Column="2" />
+                                        <Label Text="{Binding CreationDate, StringFormat='{0:MM/dd/yyyy - hh:mm:ss}'}"
+                                               Grid.Column="3" />
+                                        <HorizontalStackLayout Grid.Column="4"
+                                                               Spacing="5"
+                                                               VerticalOptions="Center"
+                                                               HorizontalOptions="End">
+                                            <Button x:Name="LicenceSaveBtn"
+                                                    Text="Save"
+                                                    FontSize="Caption"
+                                                    BackgroundColor="DarkBlue"
+                                                    TextColor="WhiteSmoke"
+                                                    Command="{Binding Source={x:Reference PageName}, Path=BindingContext.SaveCommand}"
+                                                    CommandParameter="{Binding .}" />
+                                            <Button Text="Διαγραφή"
+                                                    FontSize="Caption"
+                                                    BackgroundColor="IndianRed"
+                                                    TextColor="WhiteSmoke"
+                                                    Command="{Binding Source={x:Reference KeyGeneratorPage}, Path=BindingContext.DeleteKeysCommand}"
+                                                    CommandParameter="{Binding}" />
+                                        </HorizontalStackLayout>
+                                    </Grid>
+                                </DataTemplate>
+                            </CollectionView.ItemTemplate>
+                        </CollectionView>
                     </Grid>
                 </DataTemplate>
             </CollectionView.ItemTemplate>
         </CollectionView>
+
         <VerticalStackLayout Grid.Row="2"
                              Padding="0,0,0,0"
                              MaximumWidthRequest="1000">

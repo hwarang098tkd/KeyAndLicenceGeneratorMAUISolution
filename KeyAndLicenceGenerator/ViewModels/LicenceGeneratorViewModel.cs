@@ -47,13 +47,6 @@ namespace KeyAndLicenceGenerator.ViewModels
         [NotifyPropertyChangedFor(nameof(IsFormValid))]
         private string country;
 
-        [ObservableProperty]
-        [NotifyPropertyChangedFor(nameof(IsFormValid))]
-        private DateTime selectedDate = DateTime.Today.Date.AddYears(1);
-
-        public static DateTime MinDate => DateTime.Today.AddDays(1);
-        public static DateTime MaxDate => DateTime.Today.AddYears(50);
-
         public bool IsFormValid => ValidateFormChecker();
 
         [ObservableProperty]
@@ -66,21 +59,26 @@ namespace KeyAndLicenceGenerator.ViewModels
         private bool usbDeviceIsEnabled;
 
         [ObservableProperty]
-        private ObservableCollection<LicenseFileInfo> licenceFiles;
+        private ObservableCollection<CertificatePairModel> licenceFiles;
 
         [ObservableProperty]
         private ObservableCollection<PfxFileInfo> keyFiles;
 
-        private ObservableCollection<PfxFileInfo> _allKeyFiles = new ObservableCollection<PfxFileInfo>();
+        private readonly ObservableCollection<PfxFileInfo> _allKeyFiles = [];
         public ICommand FilterKeyFilesCommand { get; }
 
         [ObservableProperty]
         [NotifyPropertyChangedFor(nameof(IsFormValid))]
         private PfxFileInfo selectedKeyFile;
 
+        [ObservableProperty]
+        [NotifyPropertyChangedFor(nameof(IsFormValid))]
+        private DateTime selectedDate = DateTime.Today.Date.AddYears(1);
+
+        public static DateTime MinDate => DateTime.Today.AddDays(1);
+        public static DateTime MaxDate => DateTime.Today.AddYears(50);
         public ICommand SaveCommand { get; private set; }
 
-        // Constructor that accepts the LicenceGeneratorService
         public LicenceGeneratorViewModel()
         {
             SaveCommand = new Command<LicenseFileInfo>(async (item) => await SaveFile(item));
@@ -88,16 +86,31 @@ namespace KeyAndLicenceGenerator.ViewModels
             UsbDeviceNames = [];
             _ = LoadUsbDevicesAsync();
             KeyFiles = new ObservableCollection<PfxFileInfo>();
-            LicenceFiles = new ObservableCollection<LicenseFileInfo>();
+            LicenceFiles = new ObservableCollection<CertificatePairModel>();
             LoadKeyPicker();
             FilterKeyFilesCommand = new Command<string>(FilterKeyFiles);
-                        LoadCollectionView();
+            RefreshCollectionView();
+        }
+
+        partial void OnSelectedKeyFileChanged(PfxFileInfo value)
+        {
+            Debug.WriteLine(value?.FileName);
         }
 
         private void LoadCollectionView()
         {
             LicenceFiles.Clear();
-            foreach (var licenceFile in CertificateManager.CertificateLicences)
+            if (CertificateManager.CertificateModel.Count > 0)
+            {
+                CountKeyslb = $"Βρέθηκαν {CertificateManager.CertificateModel.Count} άδειες";
+                HeaderIsVisible = true;
+            }
+            else
+            {
+                CountKeyslb = "Βρέθηκαν 0 άδειες";
+                HeaderIsVisible = false;
+            }
+            foreach (var licenceFile in CertificateManager.CertificateModel)
             {
                 LicenceFiles.Add(licenceFile);
             }
@@ -111,7 +124,7 @@ namespace KeyAndLicenceGenerator.ViewModels
 
         private async Task SaveFile(LicenseFileInfo item)
         {
-            var cancellationToken = new CancellationToken(); // Consider a way to obtain or pass a CancellationToken if needed
+            var cancellationToken = new CancellationToken();
             using var stream = new MemoryStream(Encoding.Default.GetBytes("Data related to " + item.FilePath));
             var fileSaverResult = await FileSaver.Default.SaveAsync(item.FileName, stream, cancellationToken);
             if (fileSaverResult.IsSuccessful)
@@ -140,7 +153,6 @@ namespace KeyAndLicenceGenerator.ViewModels
         [RelayCommand]
         private void LoadKeyPicker()
         {
-            // Assuming CertificateManager.CertificatePairs is already populated
             KeyFiles.Clear();
             _allKeyFiles.Clear();
             foreach (var pair in CertificateManager.CertificatePairs)
@@ -154,7 +166,6 @@ namespace KeyAndLicenceGenerator.ViewModels
         {
             var validationService = new ValidationFormService();
             bool result = validationService.ValidateForm(Email, CommonName, Country, SelectedDate);
-            // Ensure SelectedKeyFile and its FilePath are not null
             result = result && SelectedKeyFile?.FilePath != null;
             return result;
         }
@@ -185,13 +196,11 @@ namespace KeyAndLicenceGenerator.ViewModels
                 else
                 {
                     Debug.WriteLine("Failed to generate and save license.");
-                    // Inform the user of failure, update UI
                 }
             }
             catch (Exception ex)
             {
                 Debug.WriteLine(ex, "Error occurred while generating and saving license.");
-                // Handle exceptions, possibly notify user
             }
         }
 
@@ -204,7 +213,6 @@ namespace KeyAndLicenceGenerator.ViewModels
                     return device;
                 }
             }
-            // Return null if no matching device is found after checking the whole list
             return null;
         }
 

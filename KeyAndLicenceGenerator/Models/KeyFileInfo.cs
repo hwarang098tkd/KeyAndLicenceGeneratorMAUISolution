@@ -27,6 +27,7 @@
         public DateTime ExpirationDate { get; set; }
         public string CustomerName { get; set; }
         public string CustomerEmail { get; set; }
+        public string UsbSerialNumberBound { get; set; }
         public DateTime CreationDate { get; set; }
     }
 
@@ -34,5 +35,10 @@
     {
         public CerFileInfo CerFile { get; set; }
         public PfxFileInfo PfxFile { get; set; }
+    }
+    public class CertificatePairModel
+    {
+        public CertificatePairFileInfo CertificatePair { get; set; }
+        public List<LicenseFileInfo> LicenseKeys { get; set; }
     }
 }
