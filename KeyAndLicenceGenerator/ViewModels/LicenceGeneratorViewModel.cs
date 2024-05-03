@@ -349,8 +349,8 @@ namespace KeyAndLicenceGenerator.ViewModels
         private async Task DeleteLicenceActionAsync(LicenseFileInfo licenceFile)
         {
             string appBasePath = AppDomain.CurrentDomain.BaseDirectory;
-            string licenceDirectoryPath = Path.Combine(appBasePath, "Keys");
-            string targetFolderName = licenceFile.CreationDate.ToString("yyyy_M_d_HH'h'_mm'm'_ss's'");
+            string licenceDirectoryPath = Path.Combine(appBasePath, "Licences");
+            string targetFolderName = licenceFile.CreationDate.ToString("yyyy_MM_dd_HH'h'_mm'm'_ss's'");
             string targetFolderPath = Path.Combine(licenceDirectoryPath, targetFolderName);
             if (Directory.Exists(targetFolderPath))
             {
