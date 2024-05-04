@@ -32,15 +32,15 @@
                     Value="Transparent" />
         </Style>
     </Shell.Resources>
-    <ShellContent Title="Κεντρική"
+    <ShellContent Title="Home"
                   ContentTemplate="{DataTemplate local:MainPage}"
                   Route="MainPage"
                   Icon="home.png" />
-    <ShellContent Title="Κλειδιά"
+    <ShellContent Title="Keys"
                   ContentTemplate="{DataTemplate local:KeysGeneratorPage}"
                   Route="KeysGeneratorPage"
                   Icon="padlock.png" />
-    <ShellContent Title="Άδειες"
+    <ShellContent Title="Licences"
                   ContentTemplate="{DataTemplate local:LicenceGeneratorPage}"
                   Route="LicenceGeneratorPage"
                   Icon="diploma.png" />

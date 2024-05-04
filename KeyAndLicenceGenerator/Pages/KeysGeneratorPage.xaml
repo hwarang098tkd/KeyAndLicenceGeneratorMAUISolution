@@ -154,7 +154,7 @@
                         <Label Text="{Binding CreationDate, StringFormat='{0:MM/dd/yyyy - hh:mm:ss}'}"
                                Grid.Column="3"
                                HorizontalOptions="Center" />
-                        <Button Text="Διαγραφή"
+                        <Button Text="Delete"
                                 Grid.Column="4"
                                 HorizontalOptions="Center"
                                 FontSize="Body"

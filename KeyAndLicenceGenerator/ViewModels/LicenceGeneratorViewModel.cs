@@ -31,7 +31,7 @@ namespace KeyAndLicenceGenerator.ViewModels
         private bool progressBarProgressVisible = false;
 
         [ObservableProperty]
-        private string countKeyslb = "No Licences found";
+        private string countKeyslb = "No Keys found";
 
         [ObservableProperty]
         private bool headerIsVisible;
@@ -111,12 +111,12 @@ namespace KeyAndLicenceGenerator.ViewModels
             LicenceFiles.Clear();
             if (CertificateManager.CertificateModel.Count > 0)
             {
-                CountKeyslb = $"{CertificateManager.CertificateModel.Count} Licences found";
+                CountKeyslb = $"{CertificateManager.CertificateModel.Count} Keys found";
                 HeaderIsVisible = true;
             }
             else
             {
-                CountKeyslb = "No Licences found";
+                CountKeyslb = "No Keys found";
                 HeaderIsVisible = false;
             }
             foreach (var licenceFile in CertificateManager.CertificateModel)
