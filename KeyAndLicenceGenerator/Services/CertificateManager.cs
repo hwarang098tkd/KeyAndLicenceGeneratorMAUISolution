@@ -1,5 +1,5 @@
 ﻿using KeyAndLicenceGenerator.Models;
-using System.Diagnostics;
+using Serilog;
 using System.Security.Cryptography;
 using System.Security.Cryptography.X509Certificates;
 using System.Text;
@@ -23,7 +23,7 @@ namespace KeyAndLicenceGenerator.Services
             {
                 if (!Directory.Exists(licenseKeyDirectoryPath))
                 {
-                    Debug.WriteLine("License key directory does not exist.");
+                    Log.Information("License key directory does not exist.");
                     return;
                 }
 
@@ -59,7 +59,7 @@ namespace KeyAndLicenceGenerator.Services
                         }
                         catch (Exception ex)
                         {
-                            Debug.WriteLine($"Failed to verify key file {keyFilePath} with certificate {pair.CerFile.FilePath}: {ex.Message}");
+                            Log.Error($"Failed to verify key file {keyFilePath} with certificate {pair.CerFile.FilePath}: {ex.Message}");
                         }
                     }
 
@@ -69,7 +69,7 @@ namespace KeyAndLicenceGenerator.Services
             }
             catch (Exception ex)
             {
-                Debug.WriteLine($"An error occurred while loading certificate licenses: {ex.Message}");
+                Log.Error($"An error occurred while loading certificate licenses: {ex.Message}");
             }
         }
 
@@ -86,7 +86,7 @@ namespace KeyAndLicenceGenerator.Services
                 string[] parts = encodedKey.Split('.');
                 if (parts.Length != 2)
                 {
-                    Debug.WriteLine("The format of the key file is incorrect.");
+                    Log.Information("The format of the key file is incorrect.");
                     return null;
                 }
 
@@ -107,7 +107,7 @@ namespace KeyAndLicenceGenerator.Services
             }
             catch (Exception ex)
             {
-                Debug.WriteLine($"An error occurred: {ex.Message}");
+                Log.Error($"An error occurred: {ex}");
                 return null;
             }
         }
@@ -117,7 +117,7 @@ namespace KeyAndLicenceGenerator.Services
             var parts = decodedData.Split('|');
             if (parts.Length < 4)
             {
-                Debug.WriteLine("Decoded license data format is incorrect or incomplete.");
+                Log.Information("Decoded license data format is incorrect or incomplete.");
                 return null;
             }
 
@@ -135,7 +135,7 @@ namespace KeyAndLicenceGenerator.Services
             }
             catch (Exception ex)
             {
-                Debug.WriteLine($"Error parsing license data: {ex.Message}");
+                Log.Error($"Error parsing license data: {ex.Message}");
                 return null;
             }
         }
@@ -155,7 +155,7 @@ namespace KeyAndLicenceGenerator.Services
                 {
                     Directory.CreateDirectory(KeysFolderPath);  // Optionally create the directory if it does not exist
                     // Or handle the case where the directory does not exist (e.g., log and return)
-                    Debug.WriteLine("Keys directory does not exist and was created.");
+                    Log.Information("Keys directory does not exist and was created.");
                     return;  // Optionally return if no directory existed initially
                 }
 
@@ -209,11 +209,10 @@ namespace KeyAndLicenceGenerator.Services
                         });
                     }
                 }
-                Debug.WriteLine("File Pairs listed");
             }
             catch (Exception ex)
             {
-                Debug.WriteLine($"An error occurred while loading certificate pairs: {ex.Message}");
+                Log.Error($"An error occurred while loading certificate pairs: {ex.Message}");
                 // Handle exceptions or rethrow to be handled higher up in the call stack
                 throw;  // Consider rethrowing if you want the calling method to handle the exception
             }

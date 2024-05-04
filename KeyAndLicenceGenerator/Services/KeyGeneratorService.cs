@@ -1,4 +1,4 @@
-﻿using System.Diagnostics;
+﻿using Serilog;
 using System.Security.Cryptography;
 using System.Security.Cryptography.X509Certificates;
 
@@ -42,20 +42,20 @@ namespace KeyAndLicenceGenerator.Services
                     var cerBytes = certificate.Export(X509ContentType.Cert);
                     File.WriteAllBytes(Path.Combine(folderPath, cerFilename), cerBytes);
 
-                    Debug.WriteLine($"The certificate files have been saved in the following directory: {folderPath}");
+                    Log.Information($"The certificate files have been saved in the following directory: {folderPath}");
                 }
             }
             catch (IOException ex)
             {
-                Debug.WriteLine($"An IO error occurred: {ex.Message}");
+                Log.Error($"An IO error occurred: {ex.Message}");
             }
             catch (CryptographicException ex)
             {
-                Debug.WriteLine($"A cryptographic error occurred: {ex.Message}");
+                Log.Error($"A cryptographic error occurred: {ex.Message}");
             }
             catch (Exception ex)
             {
-                Debug.WriteLine($"An unexpected error occurred: {ex.Message}");
+                Log.Error($"An unexpected error occurred: {ex.Message}");
             }
         }
     }

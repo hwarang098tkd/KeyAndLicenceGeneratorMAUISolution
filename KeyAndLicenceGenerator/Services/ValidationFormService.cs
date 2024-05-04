@@ -1,4 +1,4 @@
-﻿using System.Diagnostics;
+﻿using Serilog;
 using System.Text.RegularExpressions;
 
 namespace KeyAndLicenceGenerator.Services
@@ -25,7 +25,7 @@ namespace KeyAndLicenceGenerator.Services
             bool isDateValid = selectedDate > DateTime.Today;
 
             bool isValid = isValidEmail && isCommonNameValid && isCountryValid && isDateValid;
-            Debug.WriteLine($"Is form valid: {isValid}");
+            Log.Information($"Is form valid: {isValid}");
             return isValid;
         }
     }

@@ -2,8 +2,7 @@ using CommunityToolkit.Maui.Storage;
 using KeyAndLicenceGenerator.Models;
 using KeyAndLicenceGenerator.Services;
 using KeyAndLicenceGenerator.ViewModels;
-using System.Diagnostics;
-using System.Text;
+using Serilog;
 
 namespace KeyAndLicenceGenerator.Pages;
 
@@ -38,7 +37,7 @@ public partial class LicenceGeneratorPage : ContentPage
 
     private async void OnsaveClickevent(object sender, EventArgs e)
     {
-        Debug.WriteLine("Clicked");
+        Log.Information("Clicked");
         if (sender is Button button && button.CommandParameter is LicenseFileInfo selectedItem)
         {
             try
@@ -69,17 +68,17 @@ public partial class LicenceGeneratorPage : ContentPage
                     {
                         // Save the file to a new location using the file saver service
                         var path = await fileSaver.SaveAsync(Path.GetFileName(matchedLicense.FilePath), stream, cancellationTokenSource.Token);
-                        Debug.WriteLine($"File saved to: {path}");
+                        Log.Information($"File saved to: {path}");
                     }
                 }
                 else
                 {
-                    Debug.WriteLine("No matching license file found for the selected item.");
+                    Log.Information("No matching license file found for the selected item.");
                 }
             }
             catch (Exception ex)
             {
-                Debug.WriteLine($"Error: {ex.Message}");
+                Log.Error($"Error: {ex.Message}");
             }
         }
     }

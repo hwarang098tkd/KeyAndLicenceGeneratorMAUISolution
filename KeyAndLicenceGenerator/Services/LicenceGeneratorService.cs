@@ -1,4 +1,4 @@
-﻿using System.Diagnostics;
+﻿using Serilog;
 using System.Security.Cryptography;
 using System.Security.Cryptography.X509Certificates;
 using System.Text;
@@ -17,32 +17,31 @@ namespace KeyAndLicenceGenerator.Services
         {
             try
             {
-                Debug.WriteLine("Generate Process STARTED.");
-                Debug.WriteLine($"Loading private key from: {pfxFilePath}");
+                Log.Information("Generate Process STARTED.");
+                Log.Information($"Loading private key from: {pfxFilePath}");
 
                 string pfxPassword = "vte3UW5YgHMgpgqIXe6mkP3wcI5gcKoF";
                 X509Certificate2 certificate = new(pfxFilePath, pfxPassword, X509KeyStorageFlags.Exportable);
                 RSA privateRSA = certificate.GetRSAPrivateKey();
-                Debug.WriteLine("Private key loaded successfully.");
+                Log.Information("Private key loaded successfully.");
 
                 string usbDeviceSerinaNumber = GetusbDeviceSerinaNumber(usbDriveInfo);
                 if (string.IsNullOrWhiteSpace(usbDeviceSerinaNumber))
                 {
-                    Debug.WriteLine("No USB device identifier found.");
+                    Log.Information("No USB device identifier found.");
                     return false;
                 }
-                Debug.WriteLine($"Using USB Device Identifier: {usbDeviceSerinaNumber}");
+                Log.Information($"Using USB Device Identifier: {usbDeviceSerinaNumber}");
 
                 DateTime certificateExpiry = certificate.NotAfter;
                 if (selectedExpiryDate > certificateExpiry)
                 {
-                    Debug.WriteLine($"Selected expiry date {selectedExpiryDate:yyyy-MM-dd} is later than the certificate's expiry date {certificateExpiry:yyyy-MM-dd}. License cannot be generated.");
+                    Log.Information($"Selected expiry date {selectedExpiryDate:yyyy-MM-dd} is later than the certificate's expiry date {certificateExpiry:yyyy-MM-dd}. License cannot be generated.");
                     return false;
                 }
 
-
                 string licenseInfo = $"Company Name: {companyName}|Email: {email}|Exp. Date: {selectedExpiryDate:yyyy-MM-dd}|SerialNumber: {usbDeviceSerinaNumber}";
-                Debug.WriteLine($"License information: {licenseInfo}");
+                Log.Information($"License information: {licenseInfo}");
 
                 byte[] dataToSign = Encoding.UTF8.GetBytes(licenseInfo);
                 byte[] signature = privateRSA.SignData(dataToSign, HashAlgorithmName.SHA256, RSASignaturePadding.Pkcs1);
@@ -62,20 +61,20 @@ namespace KeyAndLicenceGenerator.Services
                 if (!Directory.Exists(folderPath))
                 {
                     Directory.CreateDirectory(folderPath);
-                    Debug.WriteLine("Licences directory was created successfully.");
+                    Log.Information("Licences directory was created successfully.");
                 }
 
                 // Save the license key file
                 string pfxFilename = $"{companyName}.key";
                 string fullPath = Path.Combine(folderPath, pfxFilename);
                 await File.WriteAllTextAsync(fullPath, licenseKey);
-                Debug.WriteLine($"License key saved successfully to: {fullPath}");
+                Log.Information($"License key saved successfully to: {fullPath}");
 
                 return true;
             }
             catch (Exception ex)
             {
-                Debug.WriteLine(ex, "Error occurred while generating license key.");
+                Log.Error(ex, "Error occurred while generating license key.");
                 return false;
             }
         }
@@ -97,7 +96,7 @@ namespace KeyAndLicenceGenerator.Services
             }
             catch (Exception ex)
             {
-                Debug.WriteLine(ex);
+                Log.Error(ex, "Error SaveLicenseKeyToUSB:");
                 return false;
             }
         }

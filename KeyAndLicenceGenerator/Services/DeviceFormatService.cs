@@ -1,4 +1,5 @@
-﻿using System.Diagnostics;
+﻿using Serilog;
+using System.Diagnostics;
 
 namespace KeyAndLicenceGenerator.Services
 {
@@ -28,18 +29,18 @@ namespace KeyAndLicenceGenerator.Services
 
                         if (!string.IsNullOrEmpty(errors))
                         {
-                            Debug.WriteLine($"Error formatting drive {driveLetter}: {errors}");
+                            Log.Information($"Error formatting drive {driveLetter}: {errors}");
                         }
                         else
                         {
-                            Debug.WriteLine($"Drive {driveLetter} formatted successfully with label {volumeLabel}.");
+                            Log.Information($"Drive {driveLetter} formatted successfully with label {volumeLabel}.");
                         }
                     }
                 }
             }
             catch (Exception ex)
             {
-                Debug.WriteLine($"Failed to format drive {driveLetter}: {ex.Message}");
+                Log.Error($"Failed to format drive {driveLetter}: {ex.Message}");
                 throw;
             }
         }

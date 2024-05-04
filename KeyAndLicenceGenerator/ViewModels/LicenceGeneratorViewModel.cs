@@ -2,7 +2,7 @@
 using CommunityToolkit.Mvvm.Input;
 using KeyAndLicenceGenerator.Services;
 using System.Collections.ObjectModel;
-using System.Diagnostics;
+using Serilog;
 using UsbDeviceLibrary.Model;
 using KeyAndLicenceGenerator.Models;
 using System.Windows.Input;
@@ -77,8 +77,10 @@ namespace KeyAndLicenceGenerator.ViewModels
 
         [ObservableProperty]
         public DateTime minDate = DateTime.Today.AddDays(1);
+
         [ObservableProperty]
         public DateTime maxDate = DateTime.Today.AddYears(50);
+
         public ICommand SaveCommand { get; private set; }
 
         public LicenceGeneratorViewModel()
@@ -94,11 +96,11 @@ namespace KeyAndLicenceGenerator.ViewModels
             RefreshCollectionView();
         }
 
-        partial void OnSelectedKeyFileChanged(PfxFileInfo value)
+        private partial void OnSelectedKeyFileChanged(PfxFileInfo value)
         {
             MaxDate = value.ExpirationDate;
             SelectedDate = value.ExpirationDate;
-            Debug.WriteLine(value?.FileName);
+            Log.Information(value?.FileName);
         }
 
         private void LoadCollectionView()
@@ -194,17 +196,17 @@ namespace KeyAndLicenceGenerator.ViewModels
 
                 if (licenceGenerated)
                 {
-                    Debug.WriteLine("License generated and saved successfully.");
+                    Log.Information("License generated and saved successfully.");
                     RefreshCollectionView();
                 }
                 else
                 {
-                    Debug.WriteLine("Failed to generate and save license.");
+                    Log.Information("Failed to generate and save license.");
                 }
             }
             catch (Exception ex)
             {
-                Debug.WriteLine(ex, "Error occurred while generating and saving license.");
+                Log.Error(ex, "Error occurred while generating and saving license.");
             }
         }
 
@@ -226,7 +228,7 @@ namespace KeyAndLicenceGenerator.ViewModels
         {
             if (UsbDeviceSelectedIndex < 0 || UsbDeviceSelectedIndex >= UsbDeviceNames.Count)
             {
-                Debug.WriteLine("No USB device selected or invalid selection.");
+                Log.Information("No USB device selected or invalid selection.");
                 return;
             }
 
@@ -256,18 +258,18 @@ namespace KeyAndLicenceGenerator.ViewModels
                 {
                     await simulateProgressTask;  // Ensure the simulation task completes gracefully
                 }
-                catch (TaskCanceledException)
+                catch (TaskCanceledException ex)
                 {
-                    Debug.WriteLine("Progress simulation cancelled.");
+                    Log.Error(ex, "Progress simulation cancelled.");
                 }
 
                 ProgressBarProgressVisible = false;
                 ProgressBarProgress = 0;  // Reset progress after completion
-                Debug.WriteLine("Format completed for " + driveLetter);
+                Log.Information("Format completed for " + driveLetter);
             }
             else
             {
-                Debug.WriteLine("Format cancelled for " + driveLetter);
+                Log.Information("Format cancelled for " + driveLetter);
             }
         }
 
@@ -299,9 +301,9 @@ namespace KeyAndLicenceGenerator.ViewModels
                             }
                         }
                         UsbDeviceNames.Add($"{drive.DriveLetter} | {drive}");
-                        Debug.WriteLine($"UsbDeviceNames Found: {drive.DriveLetter} | {drive}");
+                        Log.Information($"UsbDeviceNames Found: {drive.DriveLetter} | {drive}");
                     }
-                    Debug.WriteLine($"UsbDeviceNames Found: {UsbDeviceNames.Count}");
+                    Log.Information($"UsbDeviceNames Found: {UsbDeviceNames.Count}");
                     UsbDeviceIsEnabled = true;
                     // Set the first item as selected
                     UsbDeviceSelectedIndex = 1;
@@ -309,14 +311,14 @@ namespace KeyAndLicenceGenerator.ViewModels
                 else
                 {
                     UsbDeviceNames.Add("No USB devices found");
-                    Debug.WriteLine("No USB devices found");
+                    Log.Information("No USB devices found");
                     UsbDeviceIsEnabled = false;
                 }
             }
             catch (Exception ex)
             {
                 UsbDeviceNames.Add("Error loading USB devices");
-                Debug.WriteLine(ex.Message); // Log the exception
+                Log.Error(ex, "Error on LoadUsbDevicesAsync:"); // Log the exception
                 UsbDeviceIsEnabled = false;
             }
         }
@@ -324,7 +326,7 @@ namespace KeyAndLicenceGenerator.ViewModels
         [RelayCommand]
         private async Task DeleteLicenceAsync(LicenseFileInfo licenceFile)
         {
-            Debug.WriteLine($"Deleting Licence: Pressed {licenceFile.CreationDate}");
+            Log.Information($"Deleting Licence: Pressed {licenceFile.CreationDate}");
             // Prompt the user for confirmation before deletion
             bool forDeleteAnswer = await App.Current.MainPage.DisplayAlert(
                 "ΠΡΟΣΟΧΗ",
@@ -336,11 +338,11 @@ namespace KeyAndLicenceGenerator.ViewModels
             if (forDeleteAnswer)
             {
                 await DeleteLicenceActionAsync(licenceFile);  // Call the deletion method
-                Debug.WriteLine("Deletion completed for " + licenceFile.FileName);
+                Log.Information("Deletion completed for " + licenceFile.FileName);
             }
             else
             {
-                Debug.WriteLine("Deletion cancelled for " + licenceFile.FileName);
+                Log.Information("Deletion cancelled for " + licenceFile.FileName);
             }
 
             RefreshCollectionView();
@@ -357,11 +359,11 @@ namespace KeyAndLicenceGenerator.ViewModels
                 try
                 {
                     Directory.Delete(targetFolderPath, true);
-                    Debug.WriteLine($"Successfully deleted folder: {targetFolderPath}");
+                    Log.Information($"Successfully deleted folder: {targetFolderPath}");
                 }
                 catch (Exception ex)
                 {
-                    Debug.WriteLine($"Error deleting folder {targetFolderPath}: {ex.Message}");
+                    Log.Error($"Error deleting folder {targetFolderPath}: {ex}");
                 }
             }
             else
@@ -370,9 +372,10 @@ namespace KeyAndLicenceGenerator.ViewModels
                 "ΠΡΟΣΟΧΗ",
                 $"Δεν βρέθηκε η άδεια {licenceFile.CustomerName} !!!",
                 "OK");
-                Debug.WriteLine($"No folder found matching the date {targetFolderName}");
+                Log.Information($"No folder found matching the date {targetFolderName}");
             }
         }
+
 #else
         public void LoadUsbDevices()
         {

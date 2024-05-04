@@ -3,7 +3,7 @@ using CommunityToolkit.Mvvm.Input;
 using KeyAndLicenceGenerator.Models;
 using KeyAndLicenceGenerator.Services;
 using System.Collections.ObjectModel;
-using System.Diagnostics;
+using Serilog;
 
 namespace KeyAndLicenceGenerator.ViewModels
 {
@@ -67,6 +67,7 @@ namespace KeyAndLicenceGenerator.ViewModels
             CertificateManager.LoadCertificatePairs().Wait();
             LoadCollectionView();
         }
+
         public bool ValidateFormChecker()
         {
             var validationService = new ValidationFormService();
@@ -78,14 +79,14 @@ namespace KeyAndLicenceGenerator.ViewModels
         public async Task GenerateKeys()
         {
             KeyGeneratorService.GenerateAndSaveCertificate(commonName.ToUpper(), email, country.ToUpper(), selectedDate);
-            Debug.WriteLine("Form is valid, proceeding with action.");
+            Log.Information("Form is valid, proceeding with action.");
             RefreshCollectionView();
         }
 
         [RelayCommand]
         private async Task DeleteKeysAsync(PfxFileInfo keyFile)
         {
-            Debug.WriteLine($"Deleting key: Pressed {keyFile.CreationDate}");
+            Log.Information($"Deleting key: Pressed {keyFile.CreationDate}");
             // Prompt the user for confirmation before deletion
             bool forDeleteAnswer = await App.Current.MainPage.DisplayAlert(
                 "ΠΡΟΣΟΧΗ",
@@ -97,11 +98,11 @@ namespace KeyAndLicenceGenerator.ViewModels
             if (forDeleteAnswer)
             {
                 await DeleteKeysActionAsync(keyFile);  // Call the deletion method
-                Debug.WriteLine("Deletion completed for " + keyFile.FileName);
+                Log.Information("Deletion completed for " + keyFile.FileName);
             }
             else
             {
-                Debug.WriteLine("Deletion cancelled for " + keyFile.FileName);
+                Log.Information("Deletion cancelled for " + keyFile.FileName);
             }
 
             RefreshCollectionView();
@@ -118,11 +119,11 @@ namespace KeyAndLicenceGenerator.ViewModels
                 try
                 {
                     Directory.Delete(targetFolderPath, true);
-                    Debug.WriteLine($"Successfully deleted folder: {targetFolderPath}");
+                    Log.Information($"Successfully deleted folder: {targetFolderPath}");
                 }
                 catch (Exception ex)
                 {
-                    Debug.WriteLine($"Error deleting folder {targetFolderPath}: {ex.Message}");
+                    Log.Error($"Error deleting folder {targetFolderPath}: {ex.Message}");
                 }
             }
             else
@@ -131,7 +132,7 @@ namespace KeyAndLicenceGenerator.ViewModels
                 "ΠΡΟΣΟΧΗ",
                 $"Δεν βρέθηκε το κλειδί {keyFile.CommonName} !!!",
                 "OK");
-                Debug.WriteLine($"No folder found matching the date {targetFolderName}");
+                Log.Information($"No folder found matching the date {targetFolderName}");
             }
         }
     }
