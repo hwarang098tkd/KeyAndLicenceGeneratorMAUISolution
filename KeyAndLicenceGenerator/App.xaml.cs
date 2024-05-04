@@ -9,6 +9,7 @@ public partial class App : Application
         InitializeComponent();
         MainPage = new AppShell();
         CertificateManager.LoadCertificatePairs().Wait();
+        CertificateManager.LoadCertificateModels().Wait();
     }
 
     protected override Window CreateWindow(IActivationState activationState)

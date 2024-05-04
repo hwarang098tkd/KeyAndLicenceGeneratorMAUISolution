@@ -7,11 +7,11 @@
              xmlns:vm="clr-namespace:KeyAndLicenceGenerator.ViewModels"
              xmlns:toolkit="http://schemas.microsoft.com/dotnet/2022/maui/toolkit"
              ControlTemplate="{StaticResource PageTemplate}">
-    
+
     <ContentPage.BindingContext>
         <vm:LicenceGeneratorViewModel />
     </ContentPage.BindingContext>
-    
+
     <ContentPage.Resources>
         <Style x:Key="InvalidEntryStyle"
                TargetType="Entry">
@@ -256,7 +256,8 @@
                                                     FontSize="Caption"
                                                     BackgroundColor="DarkBlue"
                                                     TextColor="WhiteSmoke"
-                                                    Clicked="OnsaveClickevent"/>
+                                                    Clicked="OnsaveClickevent"
+                                                    CommandParameter="{Binding .}" />
                                             <Button Text="Διαγραφή"
                                                     FontSize="Caption"
                                                     BackgroundColor="IndianRed"
@@ -264,7 +265,6 @@
                                                     Command="{Binding Source={x:Reference LicencesGeneratorPage}, Path=BindingContext.DeleteLicenceCommand}"
                                                     CommandParameter="{Binding}" />
                                         </HorizontalStackLayout>
-
                                     </Grid>
                                 </DataTemplate>
                             </CollectionView.ItemTemplate>

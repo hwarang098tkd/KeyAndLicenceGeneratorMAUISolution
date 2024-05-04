@@ -15,7 +15,7 @@ namespace KeyAndLicenceGenerator.Services
         public static string LicencesFolderPath { get; private set; } = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "Licences");
         public static string PfxPassword { get; private set; } = "vte3UW5YgHMgpgqIXe6mkP3wcI5gcKoF";
 
-        public static async Task LoadCertificateLicences()
+        public static async Task LoadCertificateModels()
         {
             string licenseKeyDirectoryPath = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "Licences");
 
@@ -53,6 +53,7 @@ namespace KeyAndLicenceGenerator.Services
                             if (licenseFileInfo != null)
                             {
                                 // Add the license to the pair's LicenseKeys list
+                                licenseFileInfo.FilePath = keyFilePath;
                                 pairModel.LicenseKeys.Add(licenseFileInfo);
                             }
                         }
@@ -144,7 +145,6 @@ namespace KeyAndLicenceGenerator.Services
             int index = part.IndexOf(':');
             return index != -1 ? part.Substring(index + 1).Trim() : string.Empty;
         }
-
 
         public static async Task LoadCertificatePairs()
         {

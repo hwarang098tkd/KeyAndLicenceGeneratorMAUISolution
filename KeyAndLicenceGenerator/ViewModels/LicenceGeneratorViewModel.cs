@@ -122,7 +122,7 @@ namespace KeyAndLicenceGenerator.ViewModels
 
         private async Task RefreshCollectionView()
         {
-            CertificateManager.LoadCertificateLicences().Wait();
+            CertificateManager.LoadCertificateModels().Wait();
             LoadCollectionView();
         }
 
