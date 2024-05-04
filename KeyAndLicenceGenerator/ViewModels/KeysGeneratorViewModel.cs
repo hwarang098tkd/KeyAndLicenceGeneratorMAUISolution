@@ -89,10 +89,10 @@ namespace KeyAndLicenceGenerator.ViewModels
             Log.Information($"Deleting key: Pressed {keyFile.CreationDate}");
             // Prompt the user for confirmation before deletion
             bool forDeleteAnswer = await App.Current.MainPage.DisplayAlert(
-                "ΠΡΟΣΟΧΗ",
-                $"Θέλετε να διαγράψετε το κλειδί {keyFile.CommonName} ;",
-                "NAI",
-                "ΑΚΥΡΩΣΗ");
+                "ATTENTION",
+                $"Do you want to delete the  {keyFile.CommonName} key?",
+                "DELETE",
+                "CANCEL");
 
             // Proceed with deletion if the user confirms
             if (forDeleteAnswer)
@@ -129,8 +129,8 @@ namespace KeyAndLicenceGenerator.ViewModels
             else
             {
                 await App.Current.MainPage.DisplayAlert(
-                "ΠΡΟΣΟΧΗ",
-                $"Δεν βρέθηκε το κλειδί {keyFile.CommonName} !!!",
+                "ATTENTION",
+                $"Key {keyFile.CommonName} not found !!!",
                 "OK");
                 Log.Information($"No folder found matching the date {targetFolderName}");
             }

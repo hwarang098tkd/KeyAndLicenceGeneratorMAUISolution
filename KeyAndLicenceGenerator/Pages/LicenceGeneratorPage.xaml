@@ -2,7 +2,7 @@
 <ContentPage xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
              xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
              x:Class="KeyAndLicenceGenerator.Pages.LicenceGeneratorPage"
-             Title="Γεννήτρια Αδειών"
+             Title="Licences Generator"
              x:Name="LicencesGeneratorPage"
              xmlns:vm="clr-namespace:KeyAndLicenceGenerator.ViewModels"
              xmlns:toolkit="http://schemas.microsoft.com/dotnet/2022/maui/toolkit"
@@ -31,7 +31,7 @@
           MaximumWidthRequest="900">
         <VerticalStackLayout Grid.Row="0"
                              Spacing="15">
-            <Label Text="Εισάγετε τα στοιχεία της Άδειας του Πελάτη"
+            <Label Text="Add info about the Customer Licence"
                    FontAttributes="Bold"
                    HorizontalOptions="Center" />
 
@@ -51,7 +51,7 @@
                         Command="{Binding LoadKeyPickerCommand}">
                 </Button>
                 <SearchBar x:Name="searchBar"
-                           Placeholder="Αναζήτηση Κλειδιού"
+                           Placeholder="Key Search"
                            MinimumWidthRequest="200"
                            TextChanged="OnSearchTextChanged" />
             </HorizontalStackLayout>
@@ -60,9 +60,9 @@
                                  WidthRequest="600">
                 <Entry x:Name="commonName"
                        Text="{Binding CommonName, Mode=TwoWay}"
-                       Placeholder="Εταιρεία Πελάτη"
+                       Placeholder="Customer Company"
                        HorizontalOptions="FillAndExpand"
-                       ToolTipProperties.Text="Εισάγετε την επωνυμία της εταιρείας του πελάτη">
+                       ToolTipProperties.Text="Add Company Name">
                     <Entry.Behaviors>
                         <toolkit:CharactersValidationBehavior InvalidStyle="{StaticResource InvalidEntryStyle}"
                                                               ValidStyle="{StaticResource ValidEntryStyle}"
@@ -73,9 +73,9 @@
 
                 <Entry x:Name="email"
                        Text="{Binding Email, Mode=TwoWay}"
-                       Placeholder="Email Πελάτη"
+                       Placeholder="Email"
                        HorizontalOptions="Fill"
-                       ToolTipProperties.Text="Εισάγετε το email της εταιρείας του πελάτη">
+                       ToolTipProperties.Text="Add Customer Email">
                     <Entry.Behaviors>
                         <toolkit:EmailValidationBehavior InvalidStyle="{StaticResource InvalidEntryStyle}"
                                                          ValidStyle="{StaticResource ValidEntryStyle}"
@@ -85,9 +85,9 @@
 
                 <Entry x:Name="country"
                        Text="{Binding Country, Mode=TwoWay}"
-                       Placeholder="Χώρα (C)"
+                       Placeholder="Country (C)"
                        HorizontalOptions="Fill"
-                       ToolTipProperties.Text="Εισάγετε την χώρα που εδρείει η εταιρεία του πελάτη">
+                       ToolTipProperties.Text="Add Customer Country">
                     <Entry.Behaviors>
                         <toolkit:CharactersValidationBehavior InvalidStyle="{StaticResource InvalidEntryStyle}"
                                                               ValidStyle="{StaticResource ValidEntryStyle}"
@@ -102,7 +102,7 @@
                                    Margin="10"
                                    HorizontalOptions="Center">
 
-                <Label Text="Ημερομηνία Λήξης:"
+                <Label Text="Expiration Date:"
                        HorizontalOptions="Start"
                        VerticalTextAlignment="Center" />
 
@@ -111,8 +111,7 @@
                             MinimumDate="{Binding MinDate}"
                             MaximumDate="{Binding MaxDate}"
                             Date="{Binding SelectedDate, Mode=TwoWay}"
-                            HorizontalOptions="Center"
-                            ToolTipProperties.Text="Προσοχή να μην υπερβαίνει την ημερομηνίά λήξης του κλειδιού">
+                            HorizontalOptions="Center">
                     <DatePicker.Behaviors>
                         <toolkit:CharactersValidationBehavior InvalidStyle="{StaticResource InvalidEntryStyle}"
                                                               ValidStyle="{StaticResource ValidEntryStyle}"
@@ -132,17 +131,17 @@
                 <Picker x:Name="usbDevicePicker"
                         HorizontalTextAlignment="Center"
                         WidthRequest="420"
-                        ToolTipProperties.Text="Επιλέξτε το USB για να αποθηκευτεί η άδεια. Το κλειδί θα εμπεριέχει το Serial Number της συσκευής USB."
+                        ToolTipProperties.Text="Choose USB Device"
                         ItemsSource="{Binding UsbDeviceNames}"
                         SelectedIndex="{Binding UsbDeviceSelectedIndex}"
                         IsEnabled="{Binding UsbDeviceIsEnabled}"
-                        Title="Επιλέξτε Συσκευή:">
+                        Title="Pick Device:">
                 </Picker>
 
                 <Button Text="FORMAT"
                         Command="{Binding DeviceFormatCommand}"
                         HorizontalOptions="End"
-                        ToolTipProperties.Text="ΠΡΟΣΟΧΗ: Θα διαγραφούν όλα τα δεδομένα" />
+                        ToolTipProperties.Text="ATTENTION: All data will be erased" />
             </HorizontalStackLayout>
 
             <ProgressBar Progress="{Binding ProgressBarProgress}"
@@ -159,8 +158,7 @@
                     Text="Generate Keys"
                     HorizontalOptions="Fill"
                     IsEnabled="{Binding IsFormValid}"
-                    MaximumWidthRequest="600"
-                    ToolTipProperties.Text="Δημιουργία Άδειας Πελάτη. Θα σας ζητηθεί να αποθηκεύσετε αντίγραφο στον υπολογιστή σας ενώ η αποθήκευση στο USB γίνει αυτόματα" />
+                    MaximumWidthRequest="600" />
             <Border Stroke="WhiteSmoke"
                     StrokeThickness="1"
                     StrokeShape="RoundRectangle 8,8,0,0"
@@ -170,16 +168,16 @@
                       Padding="10"
                       ColumnDefinitions="0.5*,1*,1*,1*,*"
                       IsVisible="{Binding HeaderIsVisible}">
-                    <Label Text="Όνομα"
+                    <Label Text="Name"
                            Grid.Column="0"
                            HorizontalOptions="Center" />
-                    <Label Text="Ημ. Λήξης"
+                    <Label Text="Exp. Date"
                            Grid.Column="1"
                            HorizontalOptions="Center" />
                     <Label Text="Email"
                            Grid.Column="2"
                            HorizontalOptions="Center" />
-                    <Label Text="Ημ Δημιουργίας"
+                    <Label Text="Creation Date"
                            Grid.Column="3"
                            HorizontalOptions="Center" />
                     <Label Text=""
@@ -192,8 +190,7 @@
         <CollectionView ItemsSource="{Binding LicenceFiles}"
                         SelectionMode="Single"
                         VerticalOptions="FillAndExpand"
-                        Grid.Row="1"
-                        MinimumHeightRequest="400">
+                        Grid.Row="1">
             <CollectionView.ItemTemplate>
                 <DataTemplate>
                     <Grid Padding="10"
@@ -258,7 +255,7 @@
                                                     TextColor="WhiteSmoke"
                                                     Clicked="OnsaveClickevent"
                                                     CommandParameter="{Binding .}" />
-                                            <Button Text="Διαγραφή"
+                                            <Button Text="Delete"
                                                     FontSize="Caption"
                                                     BackgroundColor="IndianRed"
                                                     TextColor="WhiteSmoke"

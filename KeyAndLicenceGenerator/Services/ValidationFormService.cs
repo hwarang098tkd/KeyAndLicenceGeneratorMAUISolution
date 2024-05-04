@@ -25,7 +25,6 @@ namespace KeyAndLicenceGenerator.Services
             bool isDateValid = selectedDate > DateTime.Today;
 
             bool isValid = isValidEmail && isCommonNameValid && isCountryValid && isDateValid;
-            Log.Information($"Is form valid: {isValid}");
             return isValid;
         }
     }

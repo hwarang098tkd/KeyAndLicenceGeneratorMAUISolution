@@ -2,7 +2,6 @@
 <ContentPage xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
              xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
              x:Class="KeyAndLicenceGenerator.Pages.KeysGeneratorPage"
-             Title="Γεννήτρια Κλειδιών"
              x:Name="KeyGeneratorPage"
              xmlns:vm="clr-namespace:KeyAndLicenceGenerator.ViewModels"
              xmlns:toolkit="http://schemas.microsoft.com/dotnet/2022/maui/toolkit"
@@ -32,13 +31,13 @@
         <VerticalStackLayout Grid.Row="0"
                              Spacing="15"
                              MaximumWidthRequest="1000">
-            <Label Text="Εισάγετε τα στοιχεία του κλειδιού"
+            <Label Text="Add Key Info"
                    FontAttributes="Bold"
                    HorizontalOptions="Center" />
 
             <Entry x:Name="commonName"
                    Text="{Binding CommonName, Mode=TwoWay}"
-                   Placeholder="Όνομα Εταιρείας (CN)"
+                   Placeholder="Company Name (CN)"
                    HorizontalOptions="FillAndExpand"
                    MaximumWidthRequest="1000">
                 <Entry.Behaviors>
@@ -63,7 +62,7 @@
 
             <Entry x:Name="country"
                    Text="{Binding Country, Mode=TwoWay}"
-                   Placeholder="Χώρα (C)"
+                   Placeholder="Country (C)"
                    HorizontalOptions="Fill"
                    MaximumWidthRequest="1000">
                 <Entry.Behaviors>
@@ -75,7 +74,7 @@
             </Entry>
             <HorizontalStackLayout Padding="10"
                                    Spacing="10">
-                <Label Text="Ημερομηνία Λήξης:"
+                <Label Text="Expiration Date:"
                        HorizontalOptions="Start"
                        VerticalTextAlignment="Center" />
 
@@ -94,7 +93,7 @@
                 </DatePicker>
             </HorizontalStackLayout>
 
-            <Button Text="Δημιουργία Κλειδιών (Public cer - Private pfx)"
+            <Button Text="Create Key (Public cer - Private pfx)"
                     HorizontalOptions="Fill"
                     IsEnabled="{Binding IsFormValid}"
                     Command="{Binding GenerateKeysCommand}" />
@@ -112,19 +111,19 @@
                       Padding="10"
                       ColumnDefinitions="0.7*,1*,2*,1*,*"
                       IsVisible="{Binding HeaderIsVisible}">
-                    <Label Text="Όνομα"
+                    <Label Text="Name"
                            Grid.Column="0"
                            HorizontalOptions="Center" />
-                    <Label Text="Ημ. Λήξης"
+                    <Label Text="Exp. Date"
                            Grid.Column="1"
                            HorizontalOptions="Center" />
                     <Label Text="Email"
                            Grid.Column="2"
                            HorizontalOptions="Center" />
-                    <Label Text="Ημ Δημιουργίας"
+                    <Label Text="Creattion Date"
                            Grid.Column="3"
                            HorizontalOptions="Center" />
-                    <Label Text="Ενέργεια"
+                    <Label Text="Action"
                            Grid.Column="4"
                            HorizontalOptions="Center" />
                 </Grid>

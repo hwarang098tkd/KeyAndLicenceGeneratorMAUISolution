@@ -21,6 +21,7 @@ namespace KeyAndLicenceGenerator.ViewModels
 {
     public partial class LicenceGeneratorViewModel : ObservableObject
     {
+
         private List<UsbDriveInfo> usbDeviceList { get; set; }
 
         [ObservableProperty]
@@ -30,7 +31,7 @@ namespace KeyAndLicenceGenerator.ViewModels
         private bool progressBarProgressVisible = false;
 
         [ObservableProperty]
-        private string countKeyslb = "Βρέθηκαν 0 άδειες";
+        private string countKeyslb = "No Licences found";
 
         [ObservableProperty]
         private bool headerIsVisible;
@@ -50,9 +51,11 @@ namespace KeyAndLicenceGenerator.ViewModels
         public bool IsFormValid => ValidateFormChecker();
 
         [ObservableProperty]
+        [NotifyPropertyChangedFor(nameof(IsFormValid))]
         private int usbDeviceSelectedIndex = 0;
 
         [ObservableProperty]
+        [NotifyPropertyChangedFor(nameof(IsFormValid))]
         private ObservableCollection<string> usbDeviceNames;
 
         [ObservableProperty]
@@ -96,7 +99,7 @@ namespace KeyAndLicenceGenerator.ViewModels
             RefreshCollectionView();
         }
 
-        private partial void OnSelectedKeyFileChanged(PfxFileInfo value)
+        partial void OnSelectedKeyFileChanged(PfxFileInfo value)
         {
             MaxDate = value.ExpirationDate;
             SelectedDate = value.ExpirationDate;
@@ -108,12 +111,12 @@ namespace KeyAndLicenceGenerator.ViewModels
             LicenceFiles.Clear();
             if (CertificateManager.CertificateModel.Count > 0)
             {
-                CountKeyslb = $"Βρέθηκαν {CertificateManager.CertificateModel.Count} άδειες";
+                CountKeyslb = $"{CertificateManager.CertificateModel.Count} Licences found";
                 HeaderIsVisible = true;
             }
             else
             {
-                CountKeyslb = "Βρέθηκαν 0 άδειες";
+                CountKeyslb = "No Licences found";
                 HeaderIsVisible = false;
             }
             foreach (var licenceFile in CertificateManager.CertificateModel)
@@ -171,10 +174,20 @@ namespace KeyAndLicenceGenerator.ViewModels
         public bool ValidateFormChecker()
         {
             var validationService = new ValidationFormService();
+            // Perform existing validations
             bool result = validationService.ValidateForm(Email, CommonName, Country, SelectedDate);
+
+            // Check if a file path is selected
             result = result && SelectedKeyFile?.FilePath != null;
+
+            var usbExist =  UsbDeviceNames.Count>0;
+
+            result = result && usbExist;
+
+            Log.Information($"Is form valid: {result}");
             return result;
         }
+
 
 #if WINDOWS
 
@@ -236,17 +249,17 @@ namespace KeyAndLicenceGenerator.ViewModels
             string driveLetter = selectedDevice.Split('|')[0].Trim();
 
             bool forFormatAnswer = await App.Current.MainPage.DisplayAlert(
-                "ΠΡΟΣΟΧΗ",
-                $"Κάνοντας Format διαγραφούν όλα τα δεδομένα στην συσκευή {driveLetter}!!!",
+                "ATTENTON",
+                $"Format will erase all the data to {driveLetter}!!!",
                 "FORMAT",
-                "ΑΚΥΡΩΣΗ");
+                "CANCEL");
 
             if (forFormatAnswer)
             {
                 var formatService = new DeviceFormatService();
                 var cts = new CancellationTokenSource();
 
-                Task formattingTask = formatService.FormatDriveAsync(driveLetter, "EMMETRON_LC");
+                Task formattingTask = formatService.FormatDriveAsync(driveLetter, "COMPANY_LC");
                 Task simulateProgressTask = SimulateProgressAsync(cts.Token);
 
                 ProgressBarProgressVisible = true;
@@ -310,14 +323,14 @@ namespace KeyAndLicenceGenerator.ViewModels
                 }
                 else
                 {
-                    UsbDeviceNames.Add("No USB devices found");
+                    //UsbDeviceNames.Add("No USB devices found");
                     Log.Information("No USB devices found");
                     UsbDeviceIsEnabled = false;
                 }
             }
             catch (Exception ex)
             {
-                UsbDeviceNames.Add("Error loading USB devices");
+                //UsbDeviceNames.Add("Error loading USB devices");
                 Log.Error(ex, "Error on LoadUsbDevicesAsync:"); // Log the exception
                 UsbDeviceIsEnabled = false;
             }
@@ -329,10 +342,10 @@ namespace KeyAndLicenceGenerator.ViewModels
             Log.Information($"Deleting Licence: Pressed {licenceFile.CreationDate}");
             // Prompt the user for confirmation before deletion
             bool forDeleteAnswer = await App.Current.MainPage.DisplayAlert(
-                "ΠΡΟΣΟΧΗ",
-                $"Θέλετε να διαγράψετε την άδεια {licenceFile.CustomerName} ;",
-                "NAI",
-                "ΑΚΥΡΩΣΗ");
+                "ATTENTION",
+                $"Do you want to delete the  {licenceFile.CustomerName} licence;",
+                "DELETE",
+                "CANCEL");
 
             // Proceed with deletion if the user confirms
             if (forDeleteAnswer)
@@ -369,8 +382,8 @@ namespace KeyAndLicenceGenerator.ViewModels
             else
             {
                 await App.Current.MainPage.DisplayAlert(
-                "ΠΡΟΣΟΧΗ",
-                $"Δεν βρέθηκε η άδεια {licenceFile.CustomerName} !!!",
+                "ATTENTION",
+                $"{licenceFile.CustomerName} not found!!!",
                 "OK");
                 Log.Information($"No folder found matching the date {targetFolderName}");
             }

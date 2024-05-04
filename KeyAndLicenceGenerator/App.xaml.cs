@@ -1,4 +1,6 @@
-﻿using KeyAndLicenceGenerator.Services;
+﻿using KeyAndLicenceGenerator.Pages;
+using KeyAndLicenceGenerator.Services;
+using System.Globalization;
 
 namespace KeyAndLicenceGenerator;
 
@@ -8,6 +10,7 @@ public partial class App : Application
     {
         InitializeComponent();
         MainPage = new AppShell();
+        // Set the default language to Greek
         CertificateManager.LoadCertificatePairs().Wait();
         CertificateManager.LoadCertificateModels().Wait();
     }
@@ -34,7 +37,7 @@ public partial class App : Application
 
 #if DEBUG
         // Debug settings to test window behavior under different dimensions
-        ResizeWindow(window, 1200, 1200, 10, 10);
+        ResizeWindow(window, 1200, 700, 10, 10);
 #endif
     }
 
@@ -45,4 +48,6 @@ public partial class App : Application
         window.Width = width;
         window.Height = height;
     }
+
+    
 }

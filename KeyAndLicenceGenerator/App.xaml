@@ -17,7 +17,7 @@
                     <StackLayout Grid.Row="1"
                                  BackgroundColor="White"
                                  Padding="10">
-                        <Label Text="© 2024 EMMETRON. All rights reserved."
+                        <Label Text="© 2024 ComapnyName. All rights reserved."
                                HorizontalOptions="End"
                                FontAutoScalingEnabled="True"
                                FontSize="10" />
