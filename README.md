@@ -2,6 +2,15 @@
 ## Introduction
 The Key and Licence Generator is a software tool developed using .NET MAUI that enables users to generate public and private keys and create license files using these keys. It is designed to facilitate the management and distribution of digital certificates and licenses.
 
+### Home Page
+![Key and Licence Generator Image](/KeyAndLicenceGenerator/Resources/Images/1.png)
+
+### Keys Page
+![Key and Licence Generator Image](/KeyAndLicenceGenerator/Resources/Images/2.png)
+
+### Licenes Page
+![Key and Licence Generator Image](/KeyAndLicenceGenerator/Resources/Images/3.png)
+
 ## Usage
 To use the application, run the executable created in the build process and navigate through the GUI to generate keys or licenses as required.
 
