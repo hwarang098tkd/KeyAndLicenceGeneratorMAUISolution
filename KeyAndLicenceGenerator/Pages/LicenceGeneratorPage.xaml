@@ -256,8 +256,7 @@
                                                     FontSize="Caption"
                                                     BackgroundColor="DarkBlue"
                                                     TextColor="WhiteSmoke"
-                                                    Command="{Binding Source={x:Reference LicencesGeneratorPage}, Path=BindingContext.SaveCommand}"
-                                                    CommandParameter="{Binding .}" />
+                                                    Clicked="OnsaveClickevent"/>
                                             <Button Text="Διαγραφή"
                                                     FontSize="Caption"
                                                     BackgroundColor="IndianRed"

@@ -1,7 +1,5 @@
 ﻿using CommunityToolkit.Maui;
 using CommunityToolkit.Maui.Storage;
-using KeyAndLicenceGenerator.Services;
-using KeyAndLicenceGenerator.ViewModels;
 using Microsoft.Extensions.Logging;
 
 namespace KeyAndLicenceGenerator
