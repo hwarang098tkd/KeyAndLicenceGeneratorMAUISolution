@@ -92,10 +92,10 @@
                 </DatePicker>
             </HorizontalStackLayout>
 
-            <Button Clicked="Button_Clicked"
-                    Text="Generate Keys"
+            <Button Text="Generate Keys"
                     HorizontalOptions="Fill"
-                    IsEnabled="{Binding IsFormValid}" />
+                    IsEnabled="{Binding IsFormValid}"
+                    Command="{Binding GenerateKeysCommand}"/>
         </VerticalStackLayout>
     </ScrollView>
 </ContentPage>

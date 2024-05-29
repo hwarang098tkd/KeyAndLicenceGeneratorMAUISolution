@@ -8,9 +8,4 @@ public partial class KeysGeneratorPage : ContentPage
     {
         InitializeComponent();
     }
-
-    private void Button_Clicked(object sender, EventArgs e)
-    {
-        Debug.WriteLine("Button Pressed");
     }
-}

@@ -100,7 +100,8 @@
                 <Button x:Name="usbDeviceRefresh_btn"
                         FontFamily="FABrandsRegular"
                         Text="{StaticResource Key=arrows-rotate}"
-                        Command="{Binding LoadUsbDevicesCommand}">
+                        Command="{Binding LoadUsbDevicesCommand}"
+                        VerticalOptions="End">
                 </Button>
 
                 <Picker x:Name="usbDevicePicker"
@@ -118,9 +119,9 @@
                 <!-- Button to trigger formatting based on selected option -->
                 <Button Text="FORMAT"
                         Clicked="OnFormatClicked"
-                        HorizontalOptions="End"
                         WidthRequest="100"
-                        ToolTipProperties.Text="ΠΡΟΣΟΧΗ: Θα διαγραφούν όλα τα δεδομένα" />
+                        ToolTipProperties.Text="ΠΡΟΣΟΧΗ: Θα διαγραφούν όλα τα δεδομένα"
+                        VerticalOptions="End" />
             </HorizontalStackLayout>
 
             <Button Clicked="LicenceClicked"

@@ -86,4 +86,9 @@
 	  </MauiXaml>
 	</ItemGroup>
 
+	<ItemGroup>
+	  <Folder Include="Keys\" />
+	  <Folder Include="Licences\" />
+	</ItemGroup>
+
 </Project>

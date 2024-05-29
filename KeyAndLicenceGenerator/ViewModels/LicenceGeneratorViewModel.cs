@@ -23,13 +23,13 @@ namespace KeyAndLicenceGenerator.ViewModels
         private string country;
 
         [ObservableProperty]
-        private DateTime selectedDate;
+        private DateTime selectedDate = DateTime.Today.AddDays(365);
 
         public static DateTime MinDate => DateTime.Today.AddDays(1);
         public static DateTime MaxDate => DateTime.Today.AddYears(50);
 
         [ObservableProperty]
-        private int usbDeviceSelectedIndex = 0;  // Initialize to select the first item
+        private int usbDeviceSelectedIndex = 0;
 
         [ObservableProperty]
         private List<string> usbDeviceNames;
@@ -39,8 +39,8 @@ namespace KeyAndLicenceGenerator.ViewModels
 
         public LicenceGeneratorViewModel()
         {
-            UsbDeviceNames = new List<string>(); // Correct initialization
-            LoadUsbDevicesAsync(); // Load USB devices at initialization
+            UsbDeviceNames = new List<string>();
+            LoadUsbDevicesAsync();
         }
 
 #if WINDOWS
@@ -48,11 +48,16 @@ namespace KeyAndLicenceGenerator.ViewModels
         [RelayCommand]
         public async Task LoadUsbDevicesAsync()
         {
+            await FetchAndLoadUsbDevices();
+        }
+
+        private async Task FetchAndLoadUsbDevices()
+        {
             try
             {
                 UsbDeviceNames.Clear();
                 List<UsbDriveInfo> usbDrives = UsbDriveSearcher.GetUsbDrives();
-                if (usbDrives.Count != 0) // Check if there are any USB devices found
+                if (usbDrives.Count != 0)
                 {
                     foreach (var drive in usbDrives)
                     {
@@ -71,11 +76,11 @@ namespace KeyAndLicenceGenerator.ViewModels
             }
             catch (Exception ex)
             {
-                // Log or handle errors during USB drive search
                 UsbDeviceNames.Add("Error loading USB devices");
-                Debug.WriteLine(ex.Message); // Consider using a logging framework or MAUI's built-in logging
+                Debug.WriteLine(ex.Message);
             }
         }
+
 #else
         public void LoadUsbDevices()
         {

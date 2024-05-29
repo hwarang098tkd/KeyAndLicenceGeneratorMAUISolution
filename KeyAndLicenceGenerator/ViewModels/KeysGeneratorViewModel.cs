@@ -2,6 +2,7 @@
 using CommunityToolkit.Mvvm.Input;
 using System.Diagnostics;
 using System.Text.RegularExpressions;
+using KeyAndLicenceGenerator.Services;
 
 namespace KeyAndLicenceGenerator.ViewModels
 {
@@ -21,7 +22,7 @@ namespace KeyAndLicenceGenerator.ViewModels
 
         [ObservableProperty]
         [NotifyPropertyChangedFor(nameof(IsFormValid))]
-        private DateTime selectedDate;
+        private DateTime selectedDate = DateTime.Today.AddYears(1);
 
         public DateTime MinDate => DateTime.Today.AddDays(1);
         public DateTime MaxDate => DateTime.Today.AddYears(50);
@@ -32,8 +33,6 @@ namespace KeyAndLicenceGenerator.ViewModels
 
         private bool ValidateForm()
         {
-            Debug.WriteLine($"Validating... Email: {email}, Common Name: {commonName}, Country: {country}, Date: {selectedDate}");
-
             // Validate email
             bool isValidEmail = !string.IsNullOrWhiteSpace(email) &&
                                 Regex.IsMatch(email, emailPattern) &&
@@ -53,25 +52,15 @@ namespace KeyAndLicenceGenerator.ViewModels
 
             // Overall validity
             bool isValid = isValidEmail && isCommonNameValid && isCountryValid && isDateValid;
-            Debug.WriteLine($"Is form valid: {isValid}");
+            Debug.WriteLine($"Form is valid: {isValid}");
             return isValid;
         }
-
 
         [RelayCommand]
         public async Task GenerateKeys()
         {
-            if (IsFormValid)
-            {
-                Debug.WriteLine("Form is valid, proceeding with action.");
-                // Proceed with generating keys
-            }
-            else
-            {
-                Debug.WriteLine("Form is invalid, action aborted.");
-                // Alert the user or log the error
-                // This requires injecting a service for showing alerts, or handling it in the view.
-            }
+            KeyGeneratorService.GenerateAndSaveCertificate(commonName.ToUpper(), email, country.ToUpper());
+            Debug.WriteLine("Form is valid, proceeding with action.");
         }
     }
 }
