@@ -18,10 +18,10 @@
                              HorizontalOptions="Center">
             <HorizontalStackLayout Padding="20"
                                    Spacing="20">
-                <Button Text="ΚΛΕΙΔΙΑ"
+                <Button Text="Keys"
                         Style="{StaticResource LargeButtonStyle}"
                         Command="{Binding Path=BindingContext.NavigateToKeysCommand, Source={x:Reference MainPageInstance}}" />
-                <Button Text="ΑΔΕΙΕΣ"
+                <Button Text="Licences"
                         Style="{StaticResource LargeButtonStyle}"
                         Command="{Binding Path=BindingContext.NavigateToLicencesCommand, Source={x:Reference MainPageInstance}}" />
             </HorizontalStackLayout>

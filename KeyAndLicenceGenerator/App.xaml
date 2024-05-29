@@ -10,14 +10,14 @@
                 <ResourceDictionary Source="Resources/Styles/Styles.xaml" />
                 <ResourceDictionary Source="Resources/Styles/Icons.xaml" />
             </ResourceDictionary.MergedDictionaries>
-            
+
             <ControlTemplate x:Key="PageTemplate">
                 <Grid RowDefinitions="*,Auto">
                     <ContentPresenter Grid.Row="0" />
                     <StackLayout Grid.Row="1"
                                  BackgroundColor="White"
                                  Padding="10">
-                        <Label Text="© 2024 EMMETRON. All rights reserved."
+                        <Label Text="© 2024 ComapnyName. All rights reserved."
                                HorizontalOptions="End"
                                FontAutoScalingEnabled="True"
                                FontSize="10" />

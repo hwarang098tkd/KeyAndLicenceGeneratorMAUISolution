@@ -2,7 +2,7 @@
 <ContentPage xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
              xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
              x:Class="KeyAndLicenceGenerator.Pages.KeysGeneratorPage"
-             Title="Γεννήτρια Κλειδιών Πελάτη"
+             x:Name="KeyGeneratorPage"
              xmlns:vm="clr-namespace:KeyAndLicenceGenerator.ViewModels"
              xmlns:toolkit="http://schemas.microsoft.com/dotnet/2022/maui/toolkit"
              ControlTemplate="{StaticResource PageTemplate}">
@@ -24,19 +24,20 @@
         </Style>
     </ContentPage.Resources>
 
-    <ScrollView>
-        <VerticalStackLayout Padding="0,60,0,0"
-                             Spacing="30"
-                             HorizontalOptions="Center"
-                             MinimumWidthRequest="500"
+    <Grid RowDefinitions="Auto,*,Auto"
+          RowSpacing="20"
+          MaximumWidthRequest="800"
+          Padding="20,30,20,10">
+        <VerticalStackLayout Grid.Row="0"
+                             Spacing="15"
                              MaximumWidthRequest="1000">
-            <Label Text="Εισάγετε τα στοιχεία του κλειδιού"
+            <Label Text="Add Key Info"
                    FontAttributes="Bold"
                    HorizontalOptions="Center" />
 
             <Entry x:Name="commonName"
                    Text="{Binding CommonName, Mode=TwoWay}"
-                   Placeholder="Όνομα Εταιρείας (CN)"
+                   Placeholder="Company Name (CN)"
                    HorizontalOptions="FillAndExpand"
                    MaximumWidthRequest="1000">
                 <Entry.Behaviors>
@@ -61,7 +62,7 @@
 
             <Entry x:Name="country"
                    Text="{Binding Country, Mode=TwoWay}"
-                   Placeholder="Χώρα (C)"
+                   Placeholder="Country (C)"
                    HorizontalOptions="Fill"
                    MaximumWidthRequest="1000">
                 <Entry.Behaviors>
@@ -73,7 +74,7 @@
             </Entry>
             <HorizontalStackLayout Padding="10"
                                    Spacing="10">
-                <Label Text="Ημερομηνία Λήξης:"
+                <Label Text="Expiration Date:"
                        HorizontalOptions="Start"
                        VerticalTextAlignment="Center" />
 
@@ -92,10 +93,88 @@
                 </DatePicker>
             </HorizontalStackLayout>
 
-            <Button Text="Generate Keys"
+            <Button Text="Create Key (Public cer - Private pfx)"
                     HorizontalOptions="Fill"
                     IsEnabled="{Binding IsFormValid}"
-                    Command="{Binding GenerateKeysCommand}"/>
+                    Command="{Binding GenerateKeysCommand}" />
+            <Line X1="1140"
+                  Y1="0"
+                  X2="0"
+                  Y2="0"
+                  Stroke="Black" />
+            <Border Stroke="WhiteSmoke"
+                    StrokeThickness="1"
+                    StrokeShape="RoundRectangle 8,8,0,0"
+                    Background="white"
+                    Padding="0">
+                <Grid BackgroundColor="#4c9173"
+                      Padding="10"
+                      ColumnDefinitions="0.7*,1*,2*,1*,*"
+                      IsVisible="{Binding HeaderIsVisible}">
+                    <Label Text="Name"
+                           Grid.Column="0"
+                           HorizontalOptions="Center" />
+                    <Label Text="Exp. Date"
+                           Grid.Column="1"
+                           HorizontalOptions="Center" />
+                    <Label Text="Email"
+                           Grid.Column="2"
+                           HorizontalOptions="Center" />
+                    <Label Text="Creattion Date"
+                           Grid.Column="3"
+                           HorizontalOptions="Center" />
+                    <Label Text="Action"
+                           Grid.Column="4"
+                           HorizontalOptions="Center" />
+                </Grid>
+            </Border>
         </VerticalStackLayout>
-    </ScrollView>
+
+        <!-- Data Items -->
+        <CollectionView ItemsSource="{Binding KeyFiles}"
+                        SelectionMode="Single"
+                        VerticalOptions="FillAndExpand"
+                        Grid.Row="1"
+                        MinimumHeightRequest="400">
+            <CollectionView.ItemTemplate>
+                <DataTemplate>
+                    <Grid Padding="10"
+                          ColumnSpacing="0"
+                          RowSpacing="1"
+                          ColumnDefinitions="0.7*,1*,2*,1*,*">
+                        <Label Text="{Binding FileName}"
+                               Grid.Column="0"
+                               HorizontalOptions="Center" />
+                        <Label Text="{Binding ExpirationDate, StringFormat='{0:MM/dd/yyyy}'}"
+                               Grid.Column="1"
+                               HorizontalOptions="Center" />
+                        <Label Text="{Binding Email}"
+                               Grid.Column="2"
+                               HorizontalOptions="Center" />
+                        <Label Text="{Binding CreationDate, StringFormat='{0:MM/dd/yyyy - hh:mm:ss}'}"
+                               Grid.Column="3"
+                               HorizontalOptions="Center" />
+                        <Button Text="Delete"
+                                Grid.Column="4"
+                                HorizontalOptions="Center"
+                                FontSize="Body"
+                                BackgroundColor="IndianRed"
+                                TextColor="WhiteSmoke"
+                                Command="{Binding Source={x:Reference KeyGeneratorPage}, Path=BindingContext.DeleteKeysCommand}"
+                                CommandParameter="{Binding}" />
+                    </Grid>
+                </DataTemplate>
+            </CollectionView.ItemTemplate>
+        </CollectionView>
+        <VerticalStackLayout Grid.Row="2"
+                             Padding="0,0,0,0"
+                             MaximumWidthRequest="1000">
+            <Label Text="{Binding CountKeyslb}"
+                   HorizontalOptions="End"
+                   Padding="0,0,10,10"
+                   FontAutoScalingEnabled="True"
+                   VerticalOptions="Fill">
+            </Label>
+        </VerticalStackLayout>
+    </Grid>
 </ContentPage>

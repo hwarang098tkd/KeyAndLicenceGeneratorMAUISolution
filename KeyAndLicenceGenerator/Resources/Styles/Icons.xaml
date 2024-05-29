@@ -4,6 +4,8 @@
                     xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml">
 
     <x:String x:Key="user">&#xf007;</x:String>
-    <x:String x:Key="arrows-rotate">&#xf287;</x:String>
-    
+    <x:String x:Key="usb">&#xf287;</x:String>
+    <x:String x:Key="key">&#xf13e;</x:String>
+    <x:String x:Key="licence">&#xf2c1;</x:String>
+    <x:String x:Key="arrows-rotate">&#xf021;</x:String>
 </ResourceDictionary>

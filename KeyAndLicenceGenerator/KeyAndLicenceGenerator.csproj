@@ -26,7 +26,7 @@
     
     
 		<!-- Display name -->
-		<ApplicationTitle>KeyAndLicenceGenerator</ApplicationTitle>
+		<ApplicationTitle>Company KeyGen Pro</ApplicationTitle>
 
 		<!-- App Identifier -->
 		<ApplicationId>com.companyname.keyandlicencegenerator</ApplicationId>
@@ -43,16 +43,23 @@
 		<SupportedOSPlatformVersion Condition="$([MSBuild]::GetTargetPlatformIdentifier('$(TargetFramework)')) == 'tizen'">6.5</SupportedOSPlatformVersion>
 	</PropertyGroup>
 
+	<PropertyGroup Condition="'$(Configuration)|$(TargetFramework)|$(Platform)'=='Debug|net8.0-windows10.0.19041.0|AnyCPU'">
+	  <ApplicationIdGuid>73fe4abc-df3a-427f-9248-ef3c75ca5d02</ApplicationIdGuid>
+	</PropertyGroup>
+
+	<PropertyGroup Condition="'$(Configuration)|$(TargetFramework)|$(Platform)'=='Release|net8.0-windows10.0.19041.0|AnyCPU'">
+	  <ApplicationIdGuid>73fe4abc-df3a-427f-9248-ef3c75ca5d02</ApplicationIdGuid>
+	</PropertyGroup>
+
 	<ItemGroup>
 		<!-- App Icon -->
-		<MauiIcon Include="Resources\AppIcon\appicon.svg" ForegroundFile="Resources\AppIcon\appiconfg.svg" Color="#512BD4" />
+		<MauiIcon Include="Resources\AppIcon\key2.svg" />
 
 		<!-- Splash Screen -->
 		<MauiSplashScreen Include="Resources\Splash\splash.svg" Color="#512BD4" BaseSize="128,128" />
 
 		<!-- Images -->
 		<MauiImage Include="Resources\Images\*" />
-		<MauiImage Update="Resources\Images\dotnet_bot.png" Resize="True" BaseSize="300,185" />
 
 		<!-- Custom Fonts -->
 		<MauiFont Include="Resources\Fonts\*" />
@@ -62,12 +69,27 @@
 	</ItemGroup>
 
 	<ItemGroup>
+	  <Compile Remove="UserControls\**" />
+	  <EmbeddedResource Remove="UserControls\**" />
+	  <MauiCss Remove="UserControls\**" />
+	  <MauiXaml Remove="UserControls\**" />
+	  <None Remove="UserControls\**" />
+	</ItemGroup>
+
+	<ItemGroup>
 		<PackageReference Include="CommunityToolkit.Maui" Version="8.0.1" />
 		<PackageReference Include="CommunityToolkit.Maui.Markup" Version="4.0.0" />
 		<PackageReference Include="CommunityToolkit.Mvvm" Version="8.2.2" />
 		<PackageReference Include="Microsoft.Maui.Controls" Version="8.0.20" />
 		<PackageReference Include="Microsoft.Maui.Controls.Compatibility" Version="8.0.20" />
 		<PackageReference Include="Microsoft.Extensions.Logging.Debug" Version="8.0.0" />
+		<PackageReference Include="Microsoft.Toolkit" Version="7.1.2" />
+		<PackageReference Include="Microsoft.Toolkit.Uwp.Notifications" Version="7.1.3" />
+		<PackageReference Include="Serilog" Version="3.1.1" />
+		<PackageReference Include="Serilog.Sinks.Console" Version="5.0.1" />
+		<PackageReference Include="Serilog.Sinks.Debug" Version="2.0.0" />
+		<PackageReference Include="Serilog.Sinks.File" Version="5.0.0" />
+		<PackageReference Include="System.Threading.Tasks" Version="4.3.0" />
 	</ItemGroup>
 
 	<ItemGroup>
@@ -89,6 +111,10 @@
 	<ItemGroup>
 	  <Folder Include="Keys\" />
 	  <Folder Include="Licences\" />
+	</ItemGroup>
+
+	<ItemGroup>
+	  <PRIResource Remove="UserControls\**" />
 	</ItemGroup>
 
 </Project>

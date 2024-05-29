@@ -2,7 +2,8 @@
 <ContentPage xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
              xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
              x:Class="KeyAndLicenceGenerator.Pages.LicenceGeneratorPage"
-             Title="Γεννήτρια Αδειών"
+             Title="Licences Generator"
+             x:Name="LicencesGeneratorPage"
              xmlns:vm="clr-namespace:KeyAndLicenceGenerator.ViewModels"
              xmlns:toolkit="http://schemas.microsoft.com/dotnet/2022/maui/toolkit"
              ControlTemplate="{StaticResource PageTemplate}">
@@ -24,59 +25,84 @@
         </Style>
     </ContentPage.Resources>
 
-    <ScrollView>
-        <VerticalStackLayout Padding="0,60,0,0"
-                             Spacing="30"
-                             HorizontalOptions="Center"
-                             MinimumWidthRequest="500"
-                             MaximumWidthRequest="1000">
-            <Label Text="Εισάγετε τα στοιχεία της Άδειας του Πελάτη"
+    <Grid RowDefinitions="Auto,*,Auto"
+          RowSpacing="20"
+          Padding="20,30,20,10"
+          MaximumWidthRequest="900">
+        <VerticalStackLayout Grid.Row="0"
+                             Spacing="15">
+            <Label Text="Add info about the Customer Licence"
                    FontAttributes="Bold"
                    HorizontalOptions="Center" />
 
-            <Entry x:Name="commonName"
-                   Text="{Binding CommonName, Mode=TwoWay}"
-                   Placeholder="Εταιρεία Πελάτη"
-                   HorizontalOptions="FillAndExpand"
-                   MaximumWidthRequest="1000"
-                   ToolTipProperties.Text="Εισάγετε την επωνυμία της εταιρείας του πελάτη">
-                <Entry.Behaviors>
-                    <toolkit:CharactersValidationBehavior InvalidStyle="{StaticResource InvalidEntryStyle}"
-                                                          ValidStyle="{StaticResource ValidEntryStyle}"
-                                                          Flags="ValidateOnValueChanged"
-                                                          MinimumCharacterTypeCount="3" />
-                </Entry.Behaviors>
-            </Entry>
+            <HorizontalStackLayout Margin="10"
+                                   Spacing="15"
+                                   HorizontalOptions="Center">
 
-            <Entry x:Name="email"
-                   Text="{Binding Email, Mode=TwoWay}"
-                   Placeholder="Email Πελάτη"
-                   HorizontalOptions="Fill"
-                   MaximumWidthRequest="1000"
-                   ToolTipProperties.Text="Εισάγετε το email της εταιρείας του πελάτη">
-                <Entry.Behaviors>
-                    <toolkit:EmailValidationBehavior InvalidStyle="{StaticResource InvalidEntryStyle}"
-                                                     ValidStyle="{StaticResource ValidEntryStyle}"
-                                                     Flags="ValidateOnValueChanged" />
-                </Entry.Behaviors>
-            </Entry>
+                <Picker x:Name="keyFilePicker"
+                        WidthRequest="325"
+                        ItemsSource="{Binding KeyFiles}"
+                        ItemDisplayBinding="{Binding FileName}"
+                        SelectedItem="{Binding SelectedKeyFile, Mode=TwoWay}">
+                </Picker>
+                <Button x:Name="KeysRefresh_btn"
+                        FontFamily="FASolid"
+                        Text="{StaticResource Key=arrows-rotate}"
+                        Command="{Binding LoadKeyPickerCommand}">
+                </Button>
+                <SearchBar x:Name="searchBar"
+                           Placeholder="Key Search"
+                           MinimumWidthRequest="200"
+                           TextChanged="OnSearchTextChanged" />
+            </HorizontalStackLayout>
 
-            <Entry x:Name="country"
-                   Text="{Binding Country, Mode=TwoWay}"
-                   Placeholder="Χώρα (C)"
-                   HorizontalOptions="Fill"
-                   MaximumWidthRequest="1000"
-                   ToolTipProperties.Text="Εισάγετε την χώρα που εδρείει η εταιρεία του πελάτη">
-                <Entry.Behaviors>
-                    <toolkit:CharactersValidationBehavior InvalidStyle="{StaticResource InvalidEntryStyle}"
-                                                          ValidStyle="{StaticResource ValidEntryStyle}"
-                                                          Flags="ValidateOnValueChanged"
-                                                          MinimumCharacterTypeCount="3" />
-                </Entry.Behaviors>
-            </Entry>
+            <VerticalStackLayout Spacing="15"
+                                 WidthRequest="600">
+                <Entry x:Name="commonName"
+                       Text="{Binding CommonName, Mode=TwoWay}"
+                       Placeholder="Customer Company"
+                       HorizontalOptions="FillAndExpand"
+                       ToolTipProperties.Text="Add Company Name">
+                    <Entry.Behaviors>
+                        <toolkit:CharactersValidationBehavior InvalidStyle="{StaticResource InvalidEntryStyle}"
+                                                              ValidStyle="{StaticResource ValidEntryStyle}"
+                                                              Flags="ValidateOnValueChanged"
+                                                              MinimumCharacterTypeCount="3" />
+                    </Entry.Behaviors>
+                </Entry>
+
+                <Entry x:Name="email"
+                       Text="{Binding Email, Mode=TwoWay}"
+                       Placeholder="Email"
+                       HorizontalOptions="Fill"
+                       ToolTipProperties.Text="Add Customer Email">
+                    <Entry.Behaviors>
+                        <toolkit:EmailValidationBehavior InvalidStyle="{StaticResource InvalidEntryStyle}"
+                                                         ValidStyle="{StaticResource ValidEntryStyle}"
+                                                         Flags="ValidateOnValueChanged" />
+                    </Entry.Behaviors>
+                </Entry>
+
+                <Entry x:Name="country"
+                       Text="{Binding Country, Mode=TwoWay}"
+                       Placeholder="Country (C)"
+                       HorizontalOptions="Fill"
+                       ToolTipProperties.Text="Add Customer Country">
+                    <Entry.Behaviors>
+                        <toolkit:CharactersValidationBehavior InvalidStyle="{StaticResource InvalidEntryStyle}"
+                                                              ValidStyle="{StaticResource ValidEntryStyle}"
+                                                              Flags="ValidateOnValueChanged"
+                                                              MinimumCharacterTypeCount="3" />
+                    </Entry.Behaviors>
+                </Entry>
+            </VerticalStackLayout>
+
             <HorizontalStackLayout Padding="10"
-                                   Spacing="10">
-                <Label Text="Ημερομηνία Λήξης:"
+                                   Spacing="30"
+                                   Margin="10"
+                                   HorizontalOptions="Center">
+
+                <Label Text="Expiration Date:"
                        HorizontalOptions="Start"
                        VerticalTextAlignment="Center" />
 
@@ -85,9 +111,7 @@
                             MinimumDate="{Binding MinDate}"
                             MaximumDate="{Binding MaxDate}"
                             Date="{Binding SelectedDate, Mode=TwoWay}"
-                            HorizontalOptions="Center"
-                            MaximumWidthRequest="1000"
-                            ToolTipProperties.Text="Προσοχή να μην υπερβαίνει την ημερομηνίά λήξης του κλειδιού">
+                            HorizontalOptions="Center">
                     <DatePicker.Behaviors>
                         <toolkit:CharactersValidationBehavior InvalidStyle="{StaticResource InvalidEntryStyle}"
                                                               ValidStyle="{StaticResource ValidEntryStyle}"
@@ -96,39 +120,166 @@
                 </DatePicker>
             </HorizontalStackLayout>
             <HorizontalStackLayout Padding="5"
-                                   Spacing="5">
+                                   Spacing="5"
+                                   HorizontalOptions="Center">
                 <Button x:Name="usbDeviceRefresh_btn"
                         FontFamily="FABrandsRegular"
-                        Text="{StaticResource Key=arrows-rotate}"
-                        Command="{Binding LoadUsbDevicesCommand}"
-                        VerticalOptions="End">
+                        Text="{StaticResource Key=usb}"
+                        Command="{Binding LoadUsbDevicesCommand}">
                 </Button>
 
                 <Picker x:Name="usbDevicePicker"
-                        MinimumWidthRequest="400"
-                        WidthRequest="400"
-                        HorizontalOptions="Center"
                         HorizontalTextAlignment="Center"
-                        ToolTipProperties.Text="Επιλέξτε το USB για να αποθηκευτεί η άδεια. Το κλειδί θα εμπεριέχει το Serial Number της συσκευής USB."
+                        WidthRequest="420"
+                        ToolTipProperties.Text="Choose USB Device"
                         ItemsSource="{Binding UsbDeviceNames}"
                         SelectedIndex="{Binding UsbDeviceSelectedIndex}"
                         IsEnabled="{Binding UsbDeviceIsEnabled}"
-                        Title="Επιλέξτε Συσκευή:">
+                        Title="Pick Device:">
                 </Picker>
 
-                <!-- Button to trigger formatting based on selected option -->
                 <Button Text="FORMAT"
-                        Clicked="OnFormatClicked"
-                        WidthRequest="100"
-                        ToolTipProperties.Text="ΠΡΟΣΟΧΗ: Θα διαγραφούν όλα τα δεδομένα"
-                        VerticalOptions="End" />
+                        Command="{Binding DeviceFormatCommand}"
+                        HorizontalOptions="End"
+                        ToolTipProperties.Text="ATTENTION: All data will be erased" />
             </HorizontalStackLayout>
 
-            <Button Clicked="LicenceClicked"
+            <ProgressBar Progress="{Binding ProgressBarProgress}"
+                         ProgressColor="DarkGreen"
+                         HorizontalOptions="FillAndExpand"
+                         IsVisible="{Binding ProgressBarProgressVisible}">
+                <ProgressBar.Behaviors>
+                    <toolkit:ProgressBarAnimationBehavior Progress="{Binding ProgressBarProgress}"
+                                                          Length="500" />
+                </ProgressBar.Behaviors>
+            </ProgressBar>
+
+            <Button Command="{Binding LicenceGenerateCommand}"
                     Text="Generate Keys"
                     HorizontalOptions="Fill"
                     IsEnabled="{Binding IsFormValid}"
-                    ToolTipProperties.Text="Δημιουργία Άδειας Πελάτη. Θα σας ζητηθεί να αποθηκεύσετε αντίγραφο στον υπολογιστή σας ενώ η αποθήκευση στο USB γίνει αυτόματα" />
+                    MaximumWidthRequest="600" />
+            <Border Stroke="WhiteSmoke"
+                    StrokeThickness="1"
+                    StrokeShape="RoundRectangle 8,8,0,0"
+                    Background="white"
+                    Padding="0">
+                <Grid BackgroundColor="#c46352"
+                      Padding="10"
+                      ColumnDefinitions="0.5*,1*,1*,1*,*"
+                      IsVisible="{Binding HeaderIsVisible}">
+                    <Label Text="Name"
+                           Grid.Column="0"
+                           HorizontalOptions="Center" />
+                    <Label Text="Exp. Date"
+                           Grid.Column="1"
+                           HorizontalOptions="Center" />
+                    <Label Text="Email"
+                           Grid.Column="2"
+                           HorizontalOptions="Center" />
+                    <Label Text="Creation Date"
+                           Grid.Column="3"
+                           HorizontalOptions="Center" />
+                    <Label Text=""
+                           Grid.Column="4"
+                           HorizontalOptions="Center" />
+                </Grid>
+            </Border>
         </VerticalStackLayout>
-    </ScrollView>
+
+        <CollectionView ItemsSource="{Binding LicenceFiles}"
+                        SelectionMode="Single"
+                        VerticalOptions="FillAndExpand"
+                        Grid.Row="1">
+            <CollectionView.ItemTemplate>
+                <DataTemplate>
+                    <Grid Padding="10"
+                          ColumnSpacing="0"
+                          RowSpacing="1"
+                          ColumnDefinitions="*,*,*,*"
+                          RowDefinitions="Auto,*">
+                        <!-- First row for the certificate pair information -->
+                        <Label Text="{Binding CertificatePair.CerFile.CommonName}"
+                               Grid.Row="0"
+                               Grid.Column="0"
+                               HorizontalOptions="Start"
+                               VerticalOptions="Center"
+                               FontAttributes="Bold" />
+                        <Label Text="{Binding CertificatePair.CerFile.ExpirationDate, StringFormat='{0:MM/dd/yyyy}'}"
+                               Grid.Column="1"
+                               Grid.Row="0"
+                               HorizontalOptions="Start"
+                               VerticalOptions="Center"
+                               FontAttributes="Bold" />
+                        <Label Text="{Binding CertificatePair.CerFile.Email}"
+                               Grid.Column="2"
+                               Grid.Row="0"
+                               HorizontalOptions="Start"
+                               VerticalOptions="Center"
+                               FontAttributes="Bold" />
+                        <Label Text="{Binding CertificatePair.CerFile.CreationDate, StringFormat='{0:MM/dd/yyyy - hh:mm:ss}}'}"
+                               Grid.Column="3"
+                               Grid.Row="0"
+                               HorizontalOptions="Start"
+                               VerticalOptions="Center"
+                               FontAttributes="Bold" />
+
+                        <!-- Second row for licenses that spans all columns -->
+                        <CollectionView ItemsSource="{Binding LicenseKeys}"
+                                        Grid.Row="1"
+                                        Grid.ColumnSpan="4"
+                                        Background="White">
+                            <!-- This makes the inner CollectionView span all columns -->
+                            <CollectionView.ItemTemplate>
+                                <DataTemplate>
+                                    <Grid Padding="20,10,10,10"
+                                          ColumnSpacing="0"
+                                          RowSpacing="1"
+                                          ColumnDefinitions="0.7*,1*,1*,1*,*">
+                                        <Label Text="{Binding CustomerName}"
+                                               Grid.Column="0" />
+                                        <Label Text="{Binding ExpirationDate, StringFormat='{0:MM/dd/yyyy}'}"
+                                               Grid.Column="1" />
+                                        <Label Text="{Binding CustomerEmail}"
+                                               Grid.Column="2" />
+                                        <Label Text="{Binding CreationDate, StringFormat='{0:MM/dd/yyyy - hh:mm:ss}'}"
+                                               Grid.Column="3" />
+                                        <HorizontalStackLayout Grid.Column="4"
+                                                               Spacing="5"
+                                                               VerticalOptions="Center"
+                                                               HorizontalOptions="End">
+                                            <Button x:Name="LicenceSaveBtn"
+                                                    Text="Save"
+                                                    FontSize="Caption"
+                                                    BackgroundColor="DarkBlue"
+                                                    TextColor="WhiteSmoke"
+                                                    Clicked="OnsaveClickevent"
+                                                    CommandParameter="{Binding .}" />
+                                            <Button Text="Delete"
+                                                    FontSize="Caption"
+                                                    BackgroundColor="IndianRed"
+                                                    TextColor="WhiteSmoke"
+                                                    Command="{Binding Source={x:Reference LicencesGeneratorPage}, Path=BindingContext.DeleteLicenceCommand}"
+                                                    CommandParameter="{Binding}" />
+                                        </HorizontalStackLayout>
+                                    </Grid>
+                                </DataTemplate>
+                            </CollectionView.ItemTemplate>
+                        </CollectionView>
+                    </Grid>
+                </DataTemplate>
+            </CollectionView.ItemTemplate>
+        </CollectionView>
+
+        <VerticalStackLayout Grid.Row="2"
+                             Padding="0,0,0,0"
+                             MaximumWidthRequest="1000">
+            <Label Text="{Binding CountKeyslb}"
+                   HorizontalOptions="End"
+                   Padding="0,0,10,10"
+                   FontAutoScalingEnabled="True"
+                   VerticalOptions="Fill">
+            </Label>
+        </VerticalStackLayout>
+    </Grid>
 </ContentPage>
